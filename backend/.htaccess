@@ -1,0 +1,22 @@
+RewriteEngine On
+
+# Lindungi file sensitif
+<FilesMatch "\.(env|ini|log|sql|bak|inc|config|htaccess)$">
+    Require all denied
+</FilesMatch>
+
+# Lindungi folder config & log
+RewriteRule ^(config|log)/ - [F,L]
+
+# Blok akses langsung ke upload arsip
+RewriteRule ^assets/uploads/ - [F,L]
+
+# Nonaktifkan directory listing
+Options -Indexes
+
+# Default file
+DirectoryIndex index.php
+
+# Error handling
+ErrorDocument 403 /index.php
+ErrorDocument 404 /index.php
