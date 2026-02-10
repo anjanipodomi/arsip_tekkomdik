@@ -1,124 +1,80 @@
 <?php
 /**
- * Proses OCR Arsip
- * Fungsi:
- * - Mengubah dokumen hasil scan menjadi teks
- * - Menyimpan hasil OCR ke database
- * - Menandai status OCR pada arsip
- * - Mendukung pencarian berbasis isi dokumen
+ * PROSES OCR ARSIP (FINAL)
  */
 
 session_start();
 include __DIR__ . "/../config/database.php";
 include __DIR__ . "/../log/log_helper.php";
 
-// ==========================
-// CEK LOGIN
-// ==========================
-if (!isset($_SESSION['id_user'])) {
-    die("Akses ditolak");
-}
+// ================= CEK LOGIN =================
+if (!isset($_SESSION['id_user'])) die("Akses ditolak");
 
 $id_user  = $_SESSION['id_user'];
 $id_arsip = $_GET['id'] ?? '';
 
-if ($id_arsip === '') {
-    die("ID arsip tidak valid");
-}
+if ($id_arsip === '') die("ID arsip tidak valid");
 
-// ==========================
-// AMBIL DATA ARSIP
-// ==========================
-$q = mysqli_query($conn, "
-    SELECT file_path, status_ocr 
-    FROM arsip 
-    WHERE id_arsip='$id_arsip'
-");
-$data = mysqli_fetch_assoc($q);
+// ================= PATH TOOL =================
+$tesseract = 'C:\tesseract\tesseract.exe';
+$pdftoppm  = 'C:\poppler\Library\bin\pdftoppm.exe';
 
-if (!$data) {
-    die("Arsip tidak ditemukan");
-}
+// ================= DATA ARSIP =================
+$q = mysqli_query($conn,"SELECT file_path FROM arsip WHERE id_arsip='$id_arsip'");
+$a = mysqli_fetch_assoc($q);
+if (!$a) die("Arsip tidak ditemukan");
 
-// ==========================
-// CEK STATUS OCR (ANTI DUPLIKASI)
-// ==========================
-if ($data['status_ocr'] === 'Sukses') {
-    header("Location: ../arsip/detail.php?id=$id_arsip");
-    exit;
-}
+$file = "../".$a['file_path'];
+if (!file_exists($file)) die("File arsip tidak ditemukan");
 
-$file = "../" . $data['file_path'];
+// ================= TMP =================
+$tmpDir = "../assets/ocr/tmp";
+if (!is_dir($tmpDir)) mkdir($tmpDir,0777,true);
 
-// ==========================
-// VALIDASI FILE
-// ==========================
-if (!file_exists($file)) {
-    mysqli_query($conn, "
-        UPDATE arsip 
-        SET status_ocr='Gagal' 
-        WHERE id_arsip='$id_arsip'
-    ");
-    die("File arsip tidak ditemukan");
-}
+$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+$text = '';
 
-// ==========================
-// SIAPKAN FOLDER OCR
-// ==========================
-$folderOCR = "../assets/ocr";
-if (!is_dir($folderOCR)) {
-    mkdir($folderOCR, 0777, true);
-}
+// ================= OCR =================
+if ($ext === 'pdf') {
 
-$output = "$folderOCR/ocr_$id_arsip";
+    $imgBase = $tmpDir.'/pdf_'.uniqid();
+    exec("\"$pdftoppm\" -png \"$file\" \"$imgBase\"");
 
-// ==========================
-// PROSES OCR (TESSERACT)
-// ==========================
-exec("tesseract \"$file\" \"$output\" -l ind 2>&1", $log, $status);
-
-// ==========================
-// AMBIL HASIL OCR
-// ==========================
-$textOCR = file_exists($output . ".txt")
-    ? file_get_contents($output . ".txt")
-    : '';
-
-$textOCR = mysqli_real_escape_string($conn, $textOCR);
-
-// ==========================
-// SIMPAN HASIL OCR
-// ==========================
-if ($status === 0 && $textOCR !== '') {
-
-    // Simpan ke tabel hasil_ocr
-    mysqli_query($conn, "
-        INSERT INTO hasil_ocr (id_arsip, teks_ocr, status_ocr, tanggal_ocr)
-        VALUES ('$id_arsip', '$textOCR', 'Sukses', NOW())
-    ");
-
-    // Update status arsip
-    mysqli_query($conn, "
-        UPDATE arsip 
-        SET status_ocr='Sukses' 
-        WHERE id_arsip='$id_arsip'
-    ");
-
-    simpan_log($conn, $id_user, "OCR berhasil untuk arsip ID $id_arsip");
+    foreach (glob($imgBase.'-*.png') as $img) {
+        $out = $tmpDir.'/out_'.uniqid();
+        exec("\"$tesseract\" \"$img\" \"$out\" -l ind --oem 1 --psm 6");
+        if (file_exists("$out.txt")) {
+            $text .= file_get_contents("$out.txt")."\n";
+        }
+    }
 
 } else {
 
-    mysqli_query($conn, "
-        UPDATE arsip 
-        SET status_ocr='Gagal' 
-        WHERE id_arsip='$id_arsip'
-    ");
-
-    simpan_log($conn, $id_user, "OCR gagal untuk arsip ID $id_arsip");
+    $out = $tmpDir.'/out_'.uniqid();
+    exec("\"$tesseract\" \"$file\" \"$out\" -l ind --oem 1 --psm 6");
+    if (file_exists("$out.txt")) {
+        $text = file_get_contents("$out.txt");
+    }
 }
 
-// ==========================
-// REDIRECT
-// ==========================
-header("Location: ../arsip/detail.php?id=$id_arsip");
+// ================= SIMPAN =================
+if (trim($text) !== '') {
+
+    $safe = mysqli_real_escape_string($conn,$text);
+
+    mysqli_query($conn,"
+        INSERT INTO hasil_ocr (id_arsip, teks_ocr, tanggal_ocr)
+        VALUES ('$id_arsip','$safe',NOW())
+    ");
+
+    mysqli_query($conn,"UPDATE arsip SET status_ocr='Sukses' WHERE id_arsip='$id_arsip'");
+    simpan_log($conn,$id_user,"OCR sukses arsip $id_arsip");
+
+} else {
+
+    mysqli_query($conn,"UPDATE arsip SET status_ocr='Gagal' WHERE id_arsip='$id_arsip'");
+    simpan_log($conn,$id_user,"OCR gagal arsip $id_arsip");
+}
+
+header("Location: ../arsip/detail_arsip.php?id=$id_arsip");
 exit;

@@ -1,84 +1,149 @@
 <?php
 /**
- * Proses Retensi Arsip Otomatis
- * Berdasarkan umur arsip dan kebijakan retensi
+ * PROSES RETENSI ARSIP (FINAL & STABIL)
+ * Role : ADMIN
+ *
+ * Alur:
+ * 1. Validasi login & role
+ * 2. Cek kategori yang belum punya retensi → BATAL
+ * 3. Hitung umur arsip (berdasarkan tanggal_surat)
+ * 4. Update status arsip:
+ *    - Inaktif
+ *    - Permanen
+ *    - Siap Musnah
+ * 5. Kirim NOTIFIKASI KE PIMPINAN (1x, jika ada arsip siap musnah)
+ * 6. Simpan audit log
  */
 
 session_start();
-include __DIR__ . "/../config/database.php";
-include __DIR__ . "/../log/log_helper.php";
 
-// ==========================
-// CEK LOGIN & ROLE
-// ==========================
+require_once __DIR__ . "/../config/database.php";
+require_once __DIR__ . "/../log/log_helper.php";
+require_once __DIR__ . "/../notifikasi/helper.php";
+
+/* ==========================
+   CEK LOGIN & ROLE
+========================== */
 if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
-    die("Akses ditolak");
+    exit("Akses ditolak");
 }
 
 $id_user = $_SESSION['id_user'];
 
-// ==========================
-// AMBIL DATA ARSIP + RETENSI
-// HANYA YANG BELUM SIAP MUSNAH
-// ==========================
-$query = mysqli_query($conn, "
+/* ==========================
+   AMBIL DATA ARSIP + RETENSI
+========================== */
+$q = mysqli_query($conn, "
     SELECT 
         arsip.id_arsip,
+        arsip.nomor_surat,
         arsip.tanggal_surat,
         arsip.status_arsip,
+        kategori.id_kategori,
+        kategori.nama_kategori,
         retensi.masa_aktif,
         retensi.masa_inaktif
     FROM arsip
-    JOIN retensi ON arsip.id_kategori = retensi.id_kategori
-    WHERE arsip.status_arsip != 'Siap Musnah'
+    LEFT JOIN kategori ON arsip.id_kategori = kategori.id_kategori
+    LEFT JOIN retensi  ON kategori.id_kategori = retensi.id_kategori
 ");
 
+/* ==========================
+   VALIDASI RETENSI
+========================== */
+$kategori_tanpa_retensi = [];
+
+while ($row = mysqli_fetch_assoc($q)) {
+    if ($row['masa_aktif'] === null || $row['masa_inaktif'] === null) {
+        $kategori_tanpa_retensi[$row['id_kategori']] = $row['nama_kategori'];
+    }
+}
+
+/* ==========================
+   JIKA ADA KATEGORI TANPA RETENSI
+========================== */
+if (!empty($kategori_tanpa_retensi)) {
+
+    $_SESSION['warning_retensi'] = array_values($kategori_tanpa_retensi);
+
+    header("Location: index.php");
+    exit;
+}
+
+/* ==========================
+   RESET POINTER RESULT
+========================== */
+mysqli_data_seek($q, 0);
+
+/* ==========================
+   PROSES RETENSI
+========================== */
 $jumlah_update = 0;
+$jumlah_musnah = 0;
 
-while ($row = mysqli_fetch_assoc($query)) {
+while ($row = mysqli_fetch_assoc($q)) {
 
-    $id_arsip     = $row['id_arsip'];
-    $tgl_surat    = $row['tanggal_surat'];
-    $masa_aktif   = (int)$row['masa_aktif'];
-    $masa_inaktif = (int)$row['masa_inaktif'];
+    if (empty($row['tanggal_surat'])) {
+        continue; // skip data tidak valid
+    }
 
-    // ==========================
-    // HITUNG UMUR ARSIP (TAHUN)
-    // ==========================
-    $tanggal_surat = new DateTime($tgl_surat);
-    $hari_ini      = new DateTime();
-    $umur          = $hari_ini->diff($tanggal_surat)->y;
+    $tgl_surat = new DateTime($row['tanggal_surat']);
+    $hari_ini  = new DateTime();
+    $umur      = $hari_ini->diff($tgl_surat)->y;
 
-    // ==========================
-    // TENTUKAN STATUS BARU
-    // ==========================
-    if ($umur <= $masa_aktif) {
+    /* ==========================
+       LOGIKA STATUS
+    ========================== */
+    if ($umur <= $row['masa_aktif']) {
         $status_baru = 'Inaktif';
-    } elseif ($umur <= ($masa_aktif + $masa_inaktif)) {
+    } elseif ($umur <= ($row['masa_aktif'] + $row['masa_inaktif'])) {
         $status_baru = 'Permanen';
     } else {
         $status_baru = 'Siap Musnah';
     }
 
-    // ==========================
-    // UPDATE JIKA BERUBAH
-    // ==========================
+    /* ==========================
+       UPDATE JIKA BERUBAH
+    ========================== */
     if ($status_baru !== $row['status_arsip']) {
+
         mysqli_query($conn, "
-            UPDATE arsip 
-            SET status_arsip='$status_baru'
-            WHERE id_arsip='$id_arsip'
+            UPDATE arsip
+            SET status_arsip = '$status_baru'
+            WHERE id_arsip = '{$row['id_arsip']}'
         ");
+
         $jumlah_update++;
+
+        if ($status_baru === 'Siap Musnah') {
+            $jumlah_musnah++;
+        }
     }
 }
 
-// ==========================
-// AUDIT LOG
-// ==========================
-simpan_log($conn, $id_user, "Menjalankan proses retensi arsip otomatis");
+/* ==========================
+   NOTIFIKASI KE PIMPINAN
+   (HANYA SEKALI, JIKA ADA)
+========================== */
+if ($jumlah_musnah > 0) {
+    kirim_notifikasi_pimpinan(
+        $conn,
+        "🔔 Terdapat $jumlah_musnah arsip yang siap dimusnahkan dan menunggu persetujuan"
+    );
+}
 
-// ==========================
-// OUTPUT
-// ==========================
-echo "Proses retensi selesai. Arsip diperbarui: $jumlah_update";
+/* ==========================
+   AUDIT LOG
+========================== */
+simpan_log(
+    $conn,
+    $id_user,
+    "Menjalankan proses retensi | Update: $jumlah_update | Siap Musnah: $jumlah_musnah",
+    "Retensi"
+);
+
+/* ==========================
+   REDIRECT
+========================== */
+header("Location: index.php?success=1&update=$jumlah_update");
+exit;
