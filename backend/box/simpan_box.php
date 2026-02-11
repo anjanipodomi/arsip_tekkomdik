@@ -23,7 +23,12 @@ $lokasi_db = mysqli_real_escape_string($conn, $lokasi);
 ====================== */
 if ($id_box !== '') {
 
-    $q = mysqli_query($conn,"SELECT status FROM box WHERE id_box='$id_box'");
+    // ambil data lama
+    $q = mysqli_query($conn,"
+        SELECT kode_box, lokasi_fisik, status
+        FROM box
+        WHERE id_box='$id_box'
+    ");
     $d = mysqli_fetch_assoc($q);
 
     if (!$d) die("Data box tidak ditemukan");
@@ -32,6 +37,23 @@ if ($id_box !== '') {
         die("Status nonaktif, tidak bisa diedit");
     }
 
+    /* ======================
+       CEK TIDAK ADA PERUBAHAN
+    ====================== */
+    if (
+        $kode === $d['kode_box'] &&
+        $lokasi === $d['lokasi_fisik']
+    ) {
+        $_SESSION['error'] = "Tidak ada perubahan data";
+        $_SESSION['old'] = $_POST;
+
+        header("Location: edit_box.php?id=$id_box");
+        exit;
+    }
+
+    /* ======================
+       UPDATE JIKA ADA PERUBAHAN
+    ====================== */
     mysqli_query($conn,"
         UPDATE box
         SET kode_box='$kode_db',
@@ -39,7 +61,12 @@ if ($id_box !== '') {
         WHERE id_box='$id_box'
     ");
 
-    simpan_log($conn,$_SESSION['id_user'],"Edit box ID $id_box","Box");
+    simpan_log(
+        $conn,
+        $_SESSION['id_user'],
+        "Edit box ID $id_box",
+        "Box"
+    );
 
 /* ======================
    TAMBAH BOX

@@ -1,16 +1,15 @@
 <?php
 /**
  * Dashboard Pimpinan Tekkomdik
- * Hak Akses:
- * - Lihat semua arsip
- * - Cari arsip
- * - Lihat detail
- * - Download arsip
- * - Menyetujui / Menolak pemusnahan arsip
+ * Fungsi:
+ * - Monitoring arsip
+ * - Akses notifikasi
+ * - Navigasi ke arsip menunggu & history pemusnahan
  */
 
 session_start();
 include __DIR__ . "/../config/database.php";
+include __DIR__ . "/../notifikasi/helper.php";
 
 /* ==========================
    CEK LOGIN & ROLE
@@ -23,6 +22,9 @@ if (!isset($_SESSION['id_user'])) {
 if ($_SESSION['role'] !== 'pimpinan') {
     exit("Akses ditolak");
 }
+
+$id_user = $_SESSION['id_user'];
+$jumlah_notif = jumlah_notifikasi_baru($conn, $id_user);
 
 /* ==========================
    INPUT SEARCH
@@ -56,25 +58,7 @@ $query_all = mysqli_query($conn, "
     $where
     ORDER BY arsip.tanggal_input DESC
 ");
-
-/* ==========================
-   QUERY ARSIP SIAP MUSNAH
-========================== */
-$query_musnah = mysqli_query($conn, "
-    SELECT
-        arsip.id_arsip,
-        arsip.asal_surat,
-        arsip.nomor_surat,
-        arsip.tanggal_surat,
-        kategori.nama_kategori
-    FROM arsip
-    LEFT JOIN kategori
-        ON arsip.id_kategori = kategori.id_kategori
-    WHERE arsip.status_arsip = 'Siap Musnah'
-    ORDER BY arsip.tanggal_surat ASC
-");
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -84,32 +68,30 @@ $query_musnah = mysqli_query($conn, "
 <style>
 body { font-family: Arial; background:#f4f6f8; }
 .container { width:95%; margin:30px auto; }
-.box { background:#fff; padding:15px; border-radius:6px; margin-bottom:15px; }
-table { width:100%; border-collapse:collapse; background:#fff; margin-bottom:30px; }
+.box { background:#fff; padding:15px; border-radius:6px; margin-bottom:20px; }
+table { width:100%; border-collapse:collapse; background:#fff; }
 th, td { border:1px solid #ccc; padding:8px; text-align:center; }
 th { background:#ddd; }
-.btn { padding:5px 10px; text-decoration:none; border-radius:4px; color:#fff; font-size:13px; }
+.btn { padding:6px 10px; border-radius:4px; color:#fff; text-decoration:none; font-size:13px; }
 .detail { background:#3498db; }
 .download { background:#2ecc71; }
-.setujui { background:#27ae60; }
-.tolak { background:#e74c3c; }
 .logout { float:right; color:red; text-decoration:none; font-weight:bold; }
-input { padding:6px; width:250px; }
-button { padding:6px 10px; cursor:pointer; }
-.badge {
-    padding:3px 7px;
-    border-radius:4px;
-    font-size:12px;
-    color:#fff;
-}
+.badge { padding:3px 7px; border-radius:4px; font-size:12px; color:#fff; }
 .aktif { background:#2980b9; }
 .inaktif { background:#7f8c8d; }
 .musnah { background:#c0392b; }
-.info {
-    background:#fff3cd;
-    border-left:5px solid #f39c12;
-    padding:12px;
-    margin-bottom:15px;
+
+.action-box a {
+    display:inline-block;
+    margin-top:8px;
+    background:#34495e;
+    color:#fff;
+    padding:10px 15px;
+    border-radius:5px;
+    text-decoration:none;
+}
+.action-box a.danger {
+    background:#e74c3c;
 }
 </style>
 </head>
@@ -120,22 +102,56 @@ button { padding:6px 10px; cursor:pointer; }
 
 <h2>
 📊 Dashboard Pimpinan Tekkomdik
-<a href="../auth/logout.php" class="logout">Logout</a>
+
+<a href="../notifikasi/index.php" style="margin-left:15px;text-decoration:none;">
+🔔 Notifikasi
+<?php if ($jumlah_notif > 0): ?>
+    <strong style="color:red;">(<?= $jumlah_notif ?>)</strong>
+<?php endif; ?>
+</a>
+
+<a href="../auth/logout.php"
+   class="logout"
+   onclick="return confirm('Apakah Anda yakin ingin keluar dari sistem?')">
+   Logout
+</a>
+
 </h2>
+
+<!-- ================= AKSI UTAMA ================= -->
+<div class="box action-box">
+    <h3>🗑️ Arsip Menunggu Pemusnahan</h3>
+    <p>
+        Arsip yang telah melewati masa retensi dan memerlukan keputusan pimpinan.
+    </p>
+    <a href="../dashboard/arsip_menunggu.php" class="danger">
+        🔍 Lihat Arsip Menunggu Pemusnahan
+    </a>
+</div>
+
+<!-- ================= HISTORY PEMUSNAHAN ================= -->
+<div class="box action-box">
+    <h3>📜 Riwayat Pemusnahan Arsip</h3>
+    <p>
+        Riwayat arsip yang telah disetujui atau ditolak pemusnahannya.
+    </p>
+    <a href="../pemusnahan/history.php">
+        📄 Lihat Riwayat Pemusnahan
+    </a>
+</div>
 
 <!-- ================= SEARCH ================= -->
 <div class="box">
 <form method="GET">
     <strong>Cari Arsip:</strong>
-    <input type="text"
-           name="keyword"
+    <input type="text" name="keyword"
            placeholder="Asal / Nomor / Isi Ringkas"
            value="<?= htmlspecialchars($keyword) ?>">
     <button type="submit">Cari</button>
 </form>
 </div>
 
-<!-- ================= SEMUA ARSIP ================= -->
+<!-- ================= DAFTAR ARSIP ================= -->
 <h3>📁 Daftar Seluruh Arsip</h3>
 
 <table>
@@ -169,62 +185,14 @@ if (mysqli_num_rows($query_all) === 0) {
     <td><?= htmlspecialchars($row['nomor_surat']) ?></td>
     <td><?= $row['tanggal_surat'] ?></td>
     <td><?= htmlspecialchars($row['nama_kategori']) ?></td>
-    <td><span class="badge <?= $statusClass ?>"><?= $row['status_arsip'] ?></span></td>
+    <td>
+        <span class="badge <?= $statusClass ?>">
+            <?= $row['status_arsip'] ?>
+        </span>
+    </td>
     <td>
         <a href="../arsip/detail_arsip.php?id=<?= $row['id_arsip'] ?>" class="btn detail">Detail</a>
         <a href="../arsip/download_arsip.php?id=<?= $row['id_arsip'] ?>" class="btn download">Download</a>
-    </td>
-</tr>
-<?php
-    }
-}
-?>
-</table>
-
-<!-- ================= ARSIP SIAP MUSNAH ================= -->
-<h3>🗑️ Arsip Menunggu Persetujuan Pemusnahan</h3>
-
-<div class="info">
-⚠️ Arsip berikut telah melewati masa retensi dan menunggu keputusan pimpinan.
-</div>
-
-<table>
-<tr>
-    <th>No</th>
-    <th>Asal Surat</th>
-    <th>Nomor Surat</th>
-    <th>Tanggal Surat</th>
-    <th>Kategori</th>
-    <th>Aksi</th>
-</tr>
-
-<?php
-$no = 1;
-if (mysqli_num_rows($query_musnah) === 0) {
-    echo "<tr><td colspan='6'>Tidak ada arsip menunggu persetujuan</td></tr>";
-} else {
-    while ($row = mysqli_fetch_assoc($query_musnah)) {
-?>
-<tr>
-    <td><?= $no++ ?></td>
-    <td><?= htmlspecialchars($row['asal_surat']) ?></td>
-    <td><?= htmlspecialchars($row['nomor_surat']) ?></td>
-    <td><?= $row['tanggal_surat'] ?></td>
-    <td><?= htmlspecialchars($row['nama_kategori']) ?></td>
-    <td>
-        <a href="../arsip/detail_arsip.php?id=<?= $row['id_arsip'] ?>" class="btn detail">Detail</a>
-
-        <a href="../pemusnahan/proses_pemusnahan.php?id=<?= $row['id_arsip'] ?>&aksi=setuju"
-           class="btn setujui"
-           onclick="return confirm('Setujui pemusnahan arsip ini?')">
-           Setujui
-        </a>
-
-        <a href="../pemusnahan/proses_pemusnahan.php?id=<?= $row['id_arsip'] ?>&aksi=tolak"
-           class="btn tolak"
-           onclick="return confirm('Tolak pemusnahan arsip ini?')">
-           Tolak
-        </a>
     </td>
 </tr>
 <?php

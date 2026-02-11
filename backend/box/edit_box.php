@@ -39,6 +39,19 @@ if ($data['status'] === 'nonaktif') {
 
 <h3>✏️ Edit Box Arsip</h3>
 
+<?php if (isset($_SESSION['error'])): ?>
+    <div style="
+        background:#fff3cd;
+        color:#856404;
+        padding:10px;
+        border-left:5px solid #f0ad4e;
+        margin-bottom:15px;
+    ">
+        ⚠️ <?= htmlspecialchars($_SESSION['error']) ?>
+    </div>
+    <?php unset($_SESSION['error']); ?>
+<?php endif; ?>
+
 <form method="POST" action="simpan_box.php">
     <input type="hidden" name="id_box" value="<?= $data['id_box'] ?>">
 

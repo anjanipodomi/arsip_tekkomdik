@@ -10,18 +10,40 @@ $id   = $_POST['id_kategori'] ?? '';
 $nama = trim($_POST['nama_kategori'] ?? '');
 
 if ($id==='' || $nama==='') {
-    die("Data tidak valid");
+    $_SESSION['error'] = "Data tidak valid";
+    header("Location: edit_kategori.php?id=$id");
+    exit;
 }
 
-$q = mysqli_query($conn,"SELECT status FROM kategori WHERE id_kategori='$id'");
+$q = mysqli_query($conn,"SELECT * FROM kategori WHERE id_kategori='$id'");
 $d = mysqli_fetch_assoc($q);
 
+if (!$d) {
+    $_SESSION['error'] = "Kategori tidak ditemukan";
+    header("Location: index.php");
+    exit;
+}
+
 if ($d['status']==='nonaktif'){
-    die("Kategori nonaktif tidak bisa diedit");
+    $_SESSION['error'] = "Kategori nonaktif tidak bisa diedit";
+    header("Location: index.php");
+    exit;
 }
 
 $nama_db = mysqli_real_escape_string($conn,$nama);
 
+/* ===============================
+   CEK TIDAK ADA PERUBAHAN
+================================ */
+if ($d['nama_kategori'] === $nama) {
+    $_SESSION['error'] = "Tidak ada perubahan data";
+    header("Location: edit_kategori.php?id=$id");
+    exit;
+}
+
+/* ===============================
+   UPDATE
+================================ */
 mysqli_query($conn,"
     UPDATE kategori
     SET nama_kategori='$nama_db'

@@ -1,4 +1,10 @@
 <?php
+/**
+ * Logout Sistem Arsip Inaktif
+ * - Menghapus session
+ * - Mencatat log logout
+ */
+
 session_start();
 
 require_once __DIR__ . "/../config/database.php";
@@ -19,7 +25,7 @@ session_unset();
 session_destroy();
 
 /* =========================
-   REDIRECT KE LOGIN (FIX)
+   REDIRECT KE LOGIN
 ========================= */
-header("Location: login.php");
+header("Location: login.php?logout=1");
 exit;

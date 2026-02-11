@@ -35,8 +35,9 @@ if (isset($_SESSION['id_user'], $_SESSION['role'])) {
 
 $error = '';
 
+
 /* ==========================
-   PROSES LOGIN (POST)
+   PROSES LOGIN (POST SAJA)
 ========================== */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -47,54 +48,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Username dan password wajib diisi";
     } else {
 
-        // sementara pakai md5 (sesuai sistem kamu)
-        $password_hash = md5($password);
-
         $username_db = mysqli_real_escape_string($conn, $username);
 
-        $q = mysqli_query($conn, "
-            SELECT id_user, username, role
+        // cek username dulu
+        $q_user = mysqli_query($conn, "
+            SELECT id_user, username, password, role
             FROM users
             WHERE username='$username_db'
-              AND password='$password_hash'
             LIMIT 1
         ");
 
-        $user = mysqli_fetch_assoc($q);
+        if (mysqli_num_rows($q_user) === 0) {
 
-        if ($user) {
-
-            // SET SESSION
-            $_SESSION['id_user']  = $user['id_user'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role']     = $user['role'];
-
-            simpan_log($conn, $user['id_user'], "Login ke sistem");
-
-            // redirect sesuai role
-            switch ($user['role']) {
-                case 'admin':
-                    header("Location: ../dashboard/admin.php");
-                    break;
-                case 'staff':
-                    header("Location: ../dashboard/staff.php");
-                    break;
-                case 'pimpinan':
-                    header("Location: ../dashboard/pimpinan.php");
-                    break;
-                default:
-                    // role tidak dikenal
-                    session_unset();
-                    session_destroy();
-                    $error = "Role pengguna tidak valid";
-            }
-            exit;
+            $error = "Username tidak ditemukan";
 
         } else {
-            $error = "Username atau password salah";
+
+            $user = mysqli_fetch_assoc($q_user);
+
+            if ($user['password'] !== md5($password)) {
+
+                $error = "Password salah";
+
+            } else {
+
+                $_SESSION['id_user']  = $user['id_user'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role']     = $user['role'];
+
+                simpan_log($conn, $user['id_user'], "Login ke sistem");
+
+                switch ($user['role']) {
+                    case 'admin':
+                        header("Location: ../dashboard/admin.php");
+                        break;
+                    case 'staff':
+                        header("Location: ../dashboard/staff.php");
+                        break;
+                    case 'pimpinan':
+                        header("Location: ../dashboard/pimpinan.php");
+                        break;
+                    default:
+                        session_unset();
+                        session_destroy();
+                        $error = "Role pengguna tidak valid";
+                }
+                exit;
+            }
         }
     }
 }
+
+
 ?>
 
 <!DOCTYPE html>

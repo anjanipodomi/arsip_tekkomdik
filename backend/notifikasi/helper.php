@@ -3,9 +3,9 @@
  * Helper Notifikasi Sistem Arsip Inaktif Digital
  */
 
-/**
- * Kirim notifikasi ke SATU user
- */
+/* ==========================
+   NOTIFIKASI DASAR (LAMA)
+========================== */
 function kirim_notifikasi($conn, $id_user, $pesan)
 {
     if (!$conn || !$id_user || !$pesan) return false;
@@ -19,17 +19,12 @@ function kirim_notifikasi($conn, $id_user, $pesan)
     ");
 }
 
-/**
- * 🔔 Kirim notifikasi ke SEMUA user berdasarkan ROLE
- */
 function kirim_notifikasi_role($conn, $role, $pesan)
 {
     $role = mysqli_real_escape_string($conn, $role);
 
     $q = mysqli_query($conn, "
-        SELECT id_user
-        FROM users
-        WHERE role = '$role'
+        SELECT id_user FROM users WHERE role = '$role'
     ");
 
     while ($u = mysqli_fetch_assoc($q)) {
@@ -37,17 +32,41 @@ function kirim_notifikasi_role($conn, $role, $pesan)
     }
 }
 
-/**
- * 🔔 Khusus pimpinan
- */
-function kirim_notifikasi_pimpinan($conn, $pesan)
+
+/* ==========================
+   NOTIFIKASI + LINK (BARU)
+========================== */
+function kirim_notifikasi_dengan_link($conn, $id_user, $pesan, $link)
 {
-    kirim_notifikasi_role($conn, 'pimpinan', $pesan);
+    if (!$conn || !$id_user || !$pesan) return false;
+
+    $id_user = mysqli_real_escape_string($conn, $id_user);
+    $pesan   = mysqli_real_escape_string($conn, $pesan);
+    $link    = mysqli_real_escape_string($conn, $link);
+
+    return mysqli_query($conn, "
+        INSERT INTO notifikasi (id_user, pesan, link, status, tanggal)
+        VALUES ('$id_user', '$pesan', '$link', 'baru', NOW())
+    ");
 }
 
-/**
- * 🔔 Hitung notifikasi belum dibaca
- */
+function kirim_notifikasi_role_link($conn, $role, $pesan, $link)
+{
+    $role = mysqli_real_escape_string($conn, $role);
+
+    $q = mysqli_query($conn, "
+        SELECT id_user FROM users WHERE role = '$role'
+    ");
+
+    while ($u = mysqli_fetch_assoc($q)) {
+        kirim_notifikasi_dengan_link($conn, $u['id_user'], $pesan, $link);
+    }
+}
+
+
+/* ==========================
+   UTILITAS
+========================== */
 function jumlah_notifikasi_baru($conn, $id_user)
 {
     $id_user = mysqli_real_escape_string($conn, $id_user);
@@ -61,4 +80,21 @@ function jumlah_notifikasi_baru($conn, $id_user)
 
     $r = mysqli_fetch_assoc($q);
     return (int)$r['total'];
+}
+
+function kirim_notifikasi_pimpinan_link($conn, $pesan, $link)
+{
+    $pesan = mysqli_real_escape_string($conn, $pesan);
+    $link  = mysqli_real_escape_string($conn, $link);
+
+    $q = mysqli_query($conn, "
+        SELECT id_user FROM users WHERE role = 'pimpinan'
+    ");
+
+    while ($u = mysqli_fetch_assoc($q)) {
+        mysqli_query($conn, "
+            INSERT INTO notifikasi (id_user, pesan, link, status, tanggal)
+            VALUES ('{$u['id_user']}', '$pesan', '$link', 'baru', NOW())
+        ");
+    }
 }

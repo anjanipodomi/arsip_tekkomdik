@@ -84,7 +84,12 @@ button { padding:6px 10px; cursor:pointer; }
 
 <h2>
 📂 Dashboard Staff Tekkomdik
-<a href="../auth/logout.php" class="logout">Logout</a>
+<a href="../auth/logout.php"
+   class="logout"
+   onclick="return confirm('Apakah Anda yakin ingin keluar dari sistem?')">
+   Logout
+</a>
+
 </h2>
 
 <!-- SEARCH -->

@@ -27,6 +27,20 @@ if ($d['status']==='nonaktif'){
 
 <h3>✏️ Edit Kategori</h3>
 
+<?php if (isset($_SESSION['error'])): ?>
+    <div style="
+        background:#fff3cd;
+        color:#856404;
+        padding:12px;
+        border-left:5px solid #f0ad4e;
+        margin:15px 0;
+        border-radius:4px;
+    ">
+        ⚠️ <?= htmlspecialchars($_SESSION['error']) ?>
+    </div>
+    <?php unset($_SESSION['error']); ?>
+<?php endif; ?>
+
 <form method="POST" action="simpan_kategori.php">
     <input type="hidden" name="id_kategori" value="<?= $d['id_kategori'] ?>">
 

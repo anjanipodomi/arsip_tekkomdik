@@ -21,16 +21,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $role         = $_POST['role'] ?? '';
 
     if ($id_user === '' || $nama_lengkap === '' || $username === '' || $role === '') {
-        die("Data tidak lengkap");
+        $_SESSION['error'] = "Data tidak lengkap";
+        header("Location: edit_user.php?id=$id_user");
+        exit;
     }
 
-    // cek username duplikat (kecuali dirinya sendiri)
+    $lama = mysqli_fetch_assoc(
+        mysqli_query($conn, "SELECT * FROM users WHERE id_user='$id_user'")
+    );
+
+    if (!$lama) {
+        $_SESSION['error'] = "User tidak ditemukan";
+        header("Location: index.php");
+        exit;
+    }
+
     $cek = mysqli_query($conn, "
         SELECT id_user FROM users
         WHERE username='$username' AND id_user != '$id_user'
     ");
+
     if (mysqli_num_rows($cek) > 0) {
-        die("Username sudah digunakan");
+        $_SESSION['error'] = "Username sudah digunakan";
+        header("Location: edit_user.php?id=$id_user");
+        exit;
+    }
+
+    $tidak_berubah =
+        $lama['nama_lengkap'] === $nama_lengkap &&
+        $lama['username'] === $username &&
+        $lama['role'] === $role &&
+        ($password === '');
+
+    if ($tidak_berubah) {
+        $_SESSION['error'] = "Tidak ada perubahan data";
+        header("Location: edit_user.php?id=$id_user");
+        exit;
     }
 
     if ($password !== '') {
@@ -75,13 +101,29 @@ if (!$data) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+<meta charset="UTF-8">
 <title>Edit User</title>
+
+
 </head>
 <body>
 
-<h3>Edit User</h3>
+<h3>✏️ Edit User</h3>
+
+<?php if (isset($_SESSION['error'])): ?>
+    <div style="
+        background:#fff3cd;
+        color:#856404;
+        padding:10px;
+        border-left:5px solid #f0ad4e;
+        margin-bottom:15px;
+    ">
+        ⚠️ <?= htmlspecialchars($_SESSION['error']) ?>
+    </div>
+    <?php unset($_SESSION['error']); ?>
+<?php endif; ?>
 
 <form method="POST">
 
@@ -95,8 +137,10 @@ if (!$data) {
     <input type="text" name="username"
            value="<?= htmlspecialchars($data['username']) ?>" required><br><br>
 
+
     Password (kosongkan jika tidak diubah)<br>
     <input type="password" name="password"><br><br>
+
 
     Role<br>
     <select name="role" required>
@@ -104,8 +148,25 @@ if (!$data) {
         <option value="pimpinan" <?= $data['role']=='pimpinan'?'selected':'' ?>>Pimpinan</option>
     </select><br><br>
 
-    <button type="submit">Update</button>
+    <button type="submit">💾 Update</button>
+    <a href="index.php">Batal</a>
+
 </form>
+
+<script>
+function togglePassword() {
+    const pass = document.getElementById("password");
+    const btn  = document.querySelector(".toggle-password");
+
+    if (pass.type === "password") {
+        pass.type = "text";
+        btn.textContent = "🙈";
+    } else {
+        pass.type = "password";
+        btn.textContent = "👁";
+    }
+}
+</script>
 
 </body>
 </html>

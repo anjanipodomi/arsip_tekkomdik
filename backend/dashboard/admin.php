@@ -131,7 +131,12 @@ body {
 <!-- HEADER -->
 <div class="header">
     <h2>📊 Dashboard Admin / Operator Arsip</h2>
-    <a href="../auth/logout.php" class="logout">Logout</a>
+    <a href="../auth/logout.php"
+    class="logout"
+    onclick="return confirm('Apakah Anda yakin ingin keluar dari sistem?')">
+    Logout
+</a>
+
 </div>
 
 <!-- MENU -->

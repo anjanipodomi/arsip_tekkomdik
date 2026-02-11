@@ -51,6 +51,13 @@ th { background:#ddd; }
 <a href="../auth/logout.php" class="logout">Logout</a>
 </h2>
 
+<?php if (!empty($_SESSION['success'])) { ?>
+    <div style="background:#d1fae5;padding:10px;border:1px solid #10b981;margin-bottom:15px">
+        ✅ <?= $_SESSION['success']; ?>
+    </div>
+<?php unset($_SESSION['success']); } ?>
+
+
 <table>
 <tr>
     <th>No</th>

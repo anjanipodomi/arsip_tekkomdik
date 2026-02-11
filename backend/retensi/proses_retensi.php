@@ -125,12 +125,14 @@ while ($row = mysqli_fetch_assoc($q)) {
    NOTIFIKASI KE PIMPINAN
    (HANYA SEKALI, JIKA ADA)
 ========================== */
-if ($jumlah_musnah > 0) {
-    kirim_notifikasi_pimpinan(
-        $conn,
-        "🔔 Terdapat $jumlah_musnah arsip yang siap dimusnahkan dan menunggu persetujuan"
-    );
-}
+kirim_notifikasi_pimpinan_link(
+    $conn,
+    "🔔 Terdapat $jumlah_musnah arsip yang siap dimusnahkan dan menunggu persetujuan",
+    "/arsip_tekkomdik/backend/dashboard/arsip_menunggu.php"
+);
+
+
+
 
 /* ==========================
    AUDIT LOG

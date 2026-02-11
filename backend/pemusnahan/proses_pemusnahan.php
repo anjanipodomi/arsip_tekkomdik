@@ -27,11 +27,14 @@ if ($id_arsip === '' || !in_array($aksi, ['setuju','tolak'])) {
 /* ==========================
    CEK STATUS ARSIP
 ========================== */
-$cek = mysqli_query($conn,"
-    SELECT nomor_surat, status_arsip 
-    FROM arsip 
-    WHERE id_arsip='$id_arsip'
+$q = mysqli_query($conn, "
+    SELECT pesan, link, status, tanggal
+    FROM notifikasi
+    WHERE id_user = '$id_user'
+      AND status IN ('baru','dibaca')
+    ORDER BY tanggal DESC
 ");
+
 
 $data = mysqli_fetch_assoc($cek);
 
@@ -42,18 +45,27 @@ if (!$data || $data['status_arsip'] !== 'Siap Musnah') {
 $nomor_surat = $data['nomor_surat'];
 
 /* ==========================
+   TUTUP NOTIFIKASI LAMA
+   (BERLAKU UNTUK SETUJU & TOLAK)
+========================== */
+mysqli_query($conn, "
+    UPDATE notifikasi
+    SET status = 'selesai'
+    WHERE pesan LIKE '%$nomor_surat%'
+      AND status = 'baru'
+");
+
+/* ==========================
    PROSES SETUJU
 ========================== */
 if ($aksi === 'setuju') {
 
-    // update arsip
     mysqli_query($conn,"
-        UPDATE arsip 
+        UPDATE arsip
         SET status_arsip='Dimusnahkan'
         WHERE id_arsip='$id_arsip'
     ");
 
-    // catat pemusnahan
     mysqli_query($conn,"
         INSERT INTO pemusnahan
         (id_arsip, tanggal_pemusnahan, disetujui_oleh, keterangan)
@@ -61,7 +73,6 @@ if ($aksi === 'setuju') {
         ('$id_arsip', CURDATE(), '$id_user', 'Disetujui pimpinan')
     ");
 
-    // audit log
     simpan_log(
         $conn,
         $id_user,
@@ -69,29 +80,26 @@ if ($aksi === 'setuju') {
         "Pemusnahan"
     );
 
-    // 🔔 NOTIFIKASI KE ADMIN
-    $admin = mysqli_query($conn,"SELECT id_user FROM users WHERE role='admin'");
-    while ($a = mysqli_fetch_assoc($admin)) {
-        kirim_notifikasi(
-            $conn,
-            $a['id_user'],
-            "Pemusnahan arsip ($nomor_surat) TELAH DISETUJUI pimpinan"
-        );
-    }
+    kirim_notifikasi_role_link(
+        $conn,
+        'admin',
+        "Pemusnahan arsip ($nomor_surat) DISETUJUI pimpinan",
+        "/arsip_tekkomdik/backend/pemusnahan/history.php"
+    );
+
+    $_SESSION['success'] = "Pemusnahan dokumen arsip DISSETUJUI";
 
 /* ==========================
    PROSES TOLAK
 ========================== */
 } else {
 
-    // kembalikan arsip jadi permanen
     mysqli_query($conn,"
-        UPDATE arsip 
+        UPDATE arsip
         SET status_arsip='Permanen'
         WHERE id_arsip='$id_arsip'
     ");
 
-    // audit log
     simpan_log(
         $conn,
         $id_user,
@@ -99,19 +107,18 @@ if ($aksi === 'setuju') {
         "Pemusnahan"
     );
 
-    // 🔔 NOTIFIKASI KE ADMIN (INI YANG TADI KURANG)
-    $admin = mysqli_query($conn,"SELECT id_user FROM users WHERE role='admin'");
-    while ($a = mysqli_fetch_assoc($admin)) {
-        kirim_notifikasi(
-            $conn,
-            $a['id_user'],
-            "Arsip ID $id_arsip telah dimusnahkan (disetujui pimpinan)"
-        );
-    }
+    kirim_notifikasi_role_link(
+        $conn,
+        'admin',
+        "Pemusnahan arsip ($nomor_surat) DITOLAK pimpinan",
+        "/arsip_tekkomdik/backend/pemusnahan/history.php"
+    );
+
+    $_SESSION['success'] = "Pemusnahan dokumen arsip DITOLAK";
 }
 
 /* ==========================
    REDIRECT
 ========================== */
-header("Location: ../dashboard/pimpinan.php");
+header("Location: ../dashboard/arsip_menunggu.php");
 exit;
