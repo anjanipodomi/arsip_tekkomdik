@@ -143,7 +143,7 @@ body {
 <div class="menu">
     <strong>Menu:</strong><br><br>
 
-    <a href="../arsip/index.php">📂 Manajemen Arsip</a>
+    <a href="../arsip/index.php">📂 Daftar Arsip</a>
     <a href="../arsip/tambah_arsip.php">➕ Upload Arsip</a>
 
     <!-- MASTER DATA -->

@@ -101,11 +101,8 @@ th{background:#ddd}
 <body>
 <div class="container">
 
-<h2>📂 Manajemen Arsip Inaktif</h2>
+<h2>📂 Daftar Arsip Inaktif</h2>
 
-<?php if ($role === 'admin') { ?>
-<a href="tambah_arsip.php" class="btn tambah">➕ Tambah Arsip</a><br><br>
-<?php } ?>
 
 <form method="GET">
 <input type="text" name="keyword" placeholder="Kata kunci" value="<?= htmlspecialchars($keyword) ?>">
