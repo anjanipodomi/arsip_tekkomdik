@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama_lengkap = trim($_POST['nama_lengkap'] ?? '');
     $username     = trim($_POST['username'] ?? '');
     $password     = $_POST['password'] ?? '';
+    $password2    = $_POST['password2'] ?? '';
     $role         = $_POST['role'] ?? '';
 
     if ($id_user === '' || $nama_lengkap === '' || $username === '' || $role === '') {
@@ -36,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // Cek username sudah dipakai atau belum
     $cek = mysqli_query($conn, "
         SELECT id_user FROM users
         WHERE username='$username' AND id_user != '$id_user'
@@ -45,6 +47,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['error'] = "Username sudah digunakan";
         header("Location: edit_user.php?id=$id_user");
         exit;
+    }
+
+    // Jika password diisi, wajib sama
+    if ($password !== '') {
+        if ($password !== $password2) {
+            $_SESSION['error'] = "Konfirmasi password tidak sama";
+            header("Location: edit_user.php?id=$id_user");
+            exit;
+        }
     }
 
     $tidak_berubah =
@@ -60,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($password !== '') {
-        $password_hash = md5($password);
+        $password_hash = md5($password); // nanti kita bisa upgrade ke password_hash()
         mysqli_query($conn, "
             UPDATE users SET
                 nama_lengkap='$nama_lengkap',
@@ -79,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ");
     }
 
+    $_SESSION['success'] = "Data user berhasil diperbarui";
     header("Location: index.php");
     exit;
 }
@@ -100,26 +112,10 @@ if (!$data) {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<title>Edit User</title>
-
-
-</head>
-<body>
-
 <h3>✏️ Edit User</h3>
 
 <?php if (isset($_SESSION['error'])): ?>
-    <div style="
-        background:#fff3cd;
-        color:#856404;
-        padding:10px;
-        border-left:5px solid #f0ad4e;
-        margin-bottom:15px;
-    ">
+    <div style="background:#fff3cd;color:#856404;padding:10px;margin-bottom:15px;">
         ⚠️ <?= htmlspecialchars($_SESSION['error']) ?>
     </div>
     <?php unset($_SESSION['error']); ?>
@@ -137,10 +133,11 @@ if (!$data) {
     <input type="text" name="username"
            value="<?= htmlspecialchars($data['username']) ?>" required><br><br>
 
+    Password Baru (kosongkan jika tidak diubah)<br>
+    <input type="password" name="password" id="password"><br><br>
 
-    Password (kosongkan jika tidak diubah)<br>
-    <input type="password" name="password"><br><br>
-
+    Konfirmasi Password<br>
+    <input type="password" name="password2" id="password2"><br><br>
 
     Role<br>
     <select name="role" required>

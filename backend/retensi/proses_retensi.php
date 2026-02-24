@@ -125,11 +125,13 @@ while ($row = mysqli_fetch_assoc($q)) {
    NOTIFIKASI KE PIMPINAN
    (HANYA SEKALI, JIKA ADA)
 ========================== */
-kirim_notifikasi_pimpinan_link(
-    $conn,
-    "🔔 Terdapat $jumlah_musnah arsip yang siap dimusnahkan dan menunggu persetujuan",
-    "/arsip_tekkomdik/backend/dashboard/arsip_menunggu.php"
-);
+if ($jumlah_musnah > 0) {
+    kirim_notifikasi_pimpinan_link(
+        $conn,
+        "🔔 Terdapat $jumlah_musnah arsip yang siap dimusnahkan dan menunggu persetujuan",
+        "/arsip_tekkomdik/backend/dashboard/arsip_menunggu.php"
+    );
+}
 
 
 
@@ -147,5 +149,5 @@ simpan_log(
 /* ==========================
    REDIRECT
 ========================== */
-header("Location: index.php?success=1&update=$jumlah_update");
+header("Location: index.php?success=1&update=$jumlah_update&musnah=$jumlah_musnah");
 exit;

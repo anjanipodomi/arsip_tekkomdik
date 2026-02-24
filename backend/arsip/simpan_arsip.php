@@ -115,17 +115,32 @@ if (!empty($_FILES['file_arsip']['name'])) {
 /* ===============================
    INSERT DATABASE
 ================================ */
-mysqli_query($conn,"
+$stmt = mysqli_prepare($conn, "
 INSERT INTO arsip (
     asal_surat, nomor_surat, tanggal_surat, isi_ringkas,
     klasifikasi_keamanan, jumlah_berkas, tingkat_perkembangan,
     id_kategori, id_box, status_arsip, tanggal_input, file_path
-) VALUES (
-    '$asal', '$nomor', '$tgl', '$isi',
-    '$klas', '$jumlah', '$tingkat',
-    '$id_kat', '$id_box', 'Inaktif', CURDATE(), '$file_path'
-)
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Inaktif', CURDATE(), ?)
 ");
+
+mysqli_stmt_bind_param(
+    $stmt,
+    "sssssisiss",
+    $asal,
+    $nomor,
+    $tgl,
+    $isi,
+    $klas,
+    $jumlah,
+    $tingkat,
+    $id_kat,
+    $id_box,
+    $file_path
+);
+
+if (!mysqli_stmt_execute($stmt)) {
+    redirect_error("Gagal menyimpan arsip: " . mysqli_error($conn));
+}
 
 $id = mysqli_insert_id($conn);
 

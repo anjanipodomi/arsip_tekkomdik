@@ -4,7 +4,22 @@
  */
 
 /* ==========================
-   NOTIFIKASI DASAR (LAMA)
+   AUTO HAPUS NOTIF > 3 BULAN
+========================== */
+function bersihkan_notifikasi_lama($conn, $id_user)
+{
+    $id_user = mysqli_real_escape_string($conn, $id_user);
+
+    mysqli_query($conn, "
+        DELETE FROM notifikasi
+        WHERE id_user = '$id_user'
+          AND tanggal < DATE_SUB(NOW(), INTERVAL 3 MONTH)
+    ");
+}
+
+
+/* ==========================
+   NOTIFIKASI TANPA LINK
 ========================== */
 function kirim_notifikasi($conn, $id_user, $pesan)
 {
@@ -14,8 +29,8 @@ function kirim_notifikasi($conn, $id_user, $pesan)
     $pesan   = mysqli_real_escape_string($conn, $pesan);
 
     return mysqli_query($conn, "
-        INSERT INTO notifikasi (id_user, pesan, status, tanggal)
-        VALUES ('$id_user', '$pesan', 'baru', NOW())
+        INSERT INTO notifikasi (id_user, pesan, tanggal)
+        VALUES ('$id_user', '$pesan', NOW())
     ");
 }
 
@@ -34,7 +49,7 @@ function kirim_notifikasi_role($conn, $role, $pesan)
 
 
 /* ==========================
-   NOTIFIKASI + LINK (BARU)
+   NOTIFIKASI DENGAN LINK
 ========================== */
 function kirim_notifikasi_dengan_link($conn, $id_user, $pesan, $link)
 {
@@ -45,8 +60,8 @@ function kirim_notifikasi_dengan_link($conn, $id_user, $pesan, $link)
     $link    = mysqli_real_escape_string($conn, $link);
 
     return mysqli_query($conn, "
-        INSERT INTO notifikasi (id_user, pesan, link, status, tanggal)
-        VALUES ('$id_user', '$pesan', '$link', 'baru', NOW())
+        INSERT INTO notifikasi (id_user, pesan, link, tanggal)
+        VALUES ('$id_user', '$pesan', '$link', NOW())
     ");
 }
 
@@ -65,23 +80,8 @@ function kirim_notifikasi_role_link($conn, $role, $pesan, $link)
 
 
 /* ==========================
-   UTILITAS
+   KHUSUS PIMPINAN
 ========================== */
-function jumlah_notifikasi_baru($conn, $id_user)
-{
-    $id_user = mysqli_real_escape_string($conn, $id_user);
-
-    $q = mysqli_query($conn, "
-        SELECT COUNT(*) AS total
-        FROM notifikasi
-        WHERE id_user = '$id_user'
-          AND status = 'baru'
-    ");
-
-    $r = mysqli_fetch_assoc($q);
-    return (int)$r['total'];
-}
-
 function kirim_notifikasi_pimpinan_link($conn, $pesan, $link)
 {
     $pesan = mysqli_real_escape_string($conn, $pesan);
@@ -93,8 +93,29 @@ function kirim_notifikasi_pimpinan_link($conn, $pesan, $link)
 
     while ($u = mysqli_fetch_assoc($q)) {
         mysqli_query($conn, "
-            INSERT INTO notifikasi (id_user, pesan, link, status, tanggal)
-            VALUES ('{$u['id_user']}', '$pesan', '$link', 'baru', NOW())
+            INSERT INTO notifikasi (id_user, pesan, link, tanggal)
+            VALUES ('{$u['id_user']}', '$pesan', '$link', NOW())
         ");
     }
+}
+
+
+/* ==========================
+   HITUNG JUMLAH NOTIFIKASI
+========================== */
+function jumlah_notifikasi_baru($conn, $id_user)
+{
+    $id_user = mysqli_real_escape_string($conn, $id_user);
+
+    // 🔥 AUTO CLEAN NOTIF LAMA
+    bersihkan_notifikasi_lama($conn, $id_user);
+
+    $q = mysqli_query($conn, "
+        SELECT COUNT(*) AS total
+        FROM notifikasi
+        WHERE id_user = '$id_user'
+    ");
+
+    $r = mysqli_fetch_assoc($q);
+    return (int)$r['total'];
 }

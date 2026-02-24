@@ -27,11 +27,56 @@ th,td{border:1px solid #ccc;padding:8px;text-align:center}
 th{background:#eee}
 .warn{color:red;font-weight:bold}
 .btn{padding:5px 10px;text-decoration:none}
+.alert{
+    padding:12px;
+    margin:15px 0;
+    border-radius:6px;
+    font-weight:bold;
+}
+.alert-success{
+    background:#d4edda;
+    color:#155724;
+}
+.alert-info{
+    background:#d1ecf1;
+    color:#0c5460;
+}
 </style>
 </head>
 <body>
 
 <h2>⏳ Manajemen Retensi Arsip</h2>
+
+<?php if (isset($_GET['success'])): ?>
+
+<?php
+$update = (int)($_GET['update'] ?? 0);
+$musnah = (int)($_GET['musnah'] ?? 0);
+?>
+
+<div class="alert <?= ($update>0 || $musnah>0) ? 'alert-success' : 'alert-info' ?>">
+
+    ✅ Proses retensi berhasil dijalankan.
+    <br>
+
+    <?php if ($update > 0): ?>
+        🔄 <?= $update ?> arsip diperbarui.
+        <br>
+    <?php endif; ?>
+
+    <?php if ($musnah > 0): ?>
+        🗑 <?= $musnah ?> arsip siap musnah telah dikirim ke pimpinan.
+        <br>
+    <?php endif; ?>
+
+    <?php if ($update === 0 && $musnah === 0): ?>
+        ℹ : Tidak ada perubahan status arsip.
+    <?php endif; ?>
+
+</div>
+
+<?php endif; ?>
+
 
 <table>
 <tr>
@@ -61,7 +106,17 @@ th{background:#eee}
 <?php } ?>
 </table>
 
-<br>
+<br><br>
+
+<a href="proses_retensi.php"
+   onclick="return confirm('Jalankan proses retensi sekarang? Sistem akan menghitung ulang seluruh arsip.')"
+   class="btn"
+   style="background:#8e44ad;color:#fff;border-radius:4px;padding:8px 14px;">
+   🔁 Jalankan Proses Retensi
+</a>
+
+<br><br>
+
 <a href="../dashboard/retensi.php">⬅ Kembali</a>
 
 </body>

@@ -76,6 +76,22 @@ body { font-family: Arial; background:#f4f6f8; }
 <div class="container">
 
 <h2>⏳ Dashboard Retensi Arsip</h2>
+<?php if (isset($_GET['success'])): ?>
+    <div style="
+        background:#d4edda;
+        color:#155724;
+        padding:12px;
+        margin:15px 0;
+        border-radius:6px;
+        font-weight:bold;
+    ">
+        ✅ Proses retensi berhasil dijalankan.
+        <br>
+        🔄 <?= (int)($_GET['update'] ?? 0) ?> arsip diperbarui.
+        <br>
+        🗑 <?= (int)($_GET['musnah'] ?? 0) ?> arsip siap musnah telah dikirim ke pimpinan.
+    </div>
+<?php endif; ?>
 
 <div class="stat">
     <div class="card inaktif">
@@ -94,11 +110,8 @@ body { font-family: Arial; background:#f4f6f8; }
     </div>
 </div>
 
-<!-- ADMIN & OPERATOR BOLEH -->
-<a href="../retensi/proses_retensi.php"
-   onclick="return confirm('Jalankan proses retensi arsip sekarang?')"
-   class="btn">
-   🔁 Jalankan Proses Retensi
+<a href="../retensi/index.php" class="btn">
+   ⚙ Kelola Retensi Arsip
 </a>
 
 <br>

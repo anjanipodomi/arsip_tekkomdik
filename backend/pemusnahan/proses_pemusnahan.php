@@ -27,33 +27,35 @@ if ($id_arsip === '' || !in_array($aksi, ['setuju','tolak'])) {
 /* ==========================
    CEK STATUS ARSIP
 ========================== */
-$q = mysqli_query($conn, "
-    SELECT pesan, link, status, tanggal
-    FROM notifikasi
-    WHERE id_user = '$id_user'
-      AND status IN ('baru','dibaca')
-    ORDER BY tanggal DESC
+$cek = mysqli_query($conn, "
+    SELECT nomor_surat, status_arsip
+    FROM arsip
+    WHERE id_arsip = '$id_arsip'
 ");
-
 
 $data = mysqli_fetch_assoc($cek);
 
-if (!$data || $data['status_arsip'] !== 'Siap Musnah') {
+if (!$data) {
+    die("Data arsip tidak ditemukan");
+}
+
+if ($data['status_arsip'] !== 'Siap Musnah') {
     die("Arsip tidak dalam status siap musnah");
 }
 
 $nomor_surat = $data['nomor_surat'];
 
 /* ==========================
-   TUTUP NOTIFIKASI LAMA
-   (BERLAKU UNTUK SETUJU & TOLAK)
+   HAPUS NOTIFIKASI PIMPINAN TERKAIT ARSIP INI
 ========================== */
+$nomor_safe = mysqli_real_escape_string($conn, $nomor_surat);
+
 mysqli_query($conn, "
-    UPDATE notifikasi
-    SET status = 'selesai'
-    WHERE pesan LIKE '%$nomor_surat%'
-      AND status = 'baru'
+    DELETE FROM notifikasi
+    WHERE id_user = '$id_user'
+      AND pesan LIKE '%$nomor_safe%'
 ");
+
 
 /* ==========================
    PROSES SETUJU
@@ -80,14 +82,14 @@ if ($aksi === 'setuju') {
         "Pemusnahan"
     );
 
-    kirim_notifikasi_role_link(
+    // ✅ ADMIN TANPA LINK
+    kirim_notifikasi_role(
         $conn,
         'admin',
-        "Pemusnahan arsip ($nomor_surat) DISETUJUI pimpinan",
-        "/arsip_tekkomdik/backend/pemusnahan/history.php"
+        "Pemusnahan arsip ($nomor_surat) DISETUJUI pimpinan"
     );
 
-    $_SESSION['success'] = "Pemusnahan dokumen arsip DISSETUJUI";
+    $_SESSION['success'] = "Pemusnahan dokumen arsip DISETUJUI";
 
 /* ==========================
    PROSES TOLAK
@@ -100,6 +102,13 @@ if ($aksi === 'setuju') {
         WHERE id_arsip='$id_arsip'
     ");
 
+    mysqli_query($conn,"
+        INSERT INTO pemusnahan
+        (id_arsip, tanggal_pemusnahan, disetujui_oleh, keterangan)
+        VALUES
+        ('$id_arsip', CURDATE(), '$id_user', 'Ditolak pimpinan')
+    ");
+
     simpan_log(
         $conn,
         $id_user,
@@ -107,11 +116,11 @@ if ($aksi === 'setuju') {
         "Pemusnahan"
     );
 
-    kirim_notifikasi_role_link(
+    // ✅ ADMIN TANPA LINK
+    kirim_notifikasi_role(
         $conn,
         'admin',
-        "Pemusnahan arsip ($nomor_surat) DITOLAK pimpinan",
-        "/arsip_tekkomdik/backend/pemusnahan/history.php"
+        "Pemusnahan arsip ($nomor_surat) DITOLAK pimpinan"
     );
 
     $_SESSION['success'] = "Pemusnahan dokumen arsip DITOLAK";

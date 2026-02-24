@@ -8,11 +8,22 @@ require_once __DIR__ . '/../library/fpdf.php';
 /* ==========================
    CEK LOGIN
 ========================== */
-if (!isset($_SESSION['id_user']) || !in_array($_SESSION['role'], ['admin','operator','pimpinan'])) {
+if (!isset($_SESSION['id_user']) || 
+    !in_array($_SESSION['role'], ['admin','staff','pimpinan'])) {
     exit("Akses ditolak");
 }
 
 $jenis = $_GET['jenis'] ?? '';
+
+/* ==========================
+   PAGINATION (50 DATA)
+========================== */
+$limit = 50;
+$page  = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
+if ($page < 1) $page = 1;
+
+$offset = ($page - 1) * $limit;
 if (!in_array($jenis, ['arsip','retensi','pemusnahan','log'])) {
     exit("Jenis laporan tidak valid");
 }
@@ -86,14 +97,15 @@ if ($jenis === 'arsip') {
 
     $q = mysqli_query($conn,"
         SELECT arsip.nomor_surat, arsip.asal_surat, arsip.tanggal_surat,
-               arsip.status_arsip, kategori.nama_kategori, box.kode_box
+            arsip.status_arsip, kategori.nama_kategori, box.kode_box
         FROM arsip
         LEFT JOIN kategori ON arsip.id_kategori = kategori.id_kategori
         LEFT JOIN box ON arsip.id_box = box.id_box
         ORDER BY arsip.tanggal_surat DESC
+        LIMIT $offset, $limit
     ");
 
-    $no = 1;
+    $no = $offset + 1;
     while ($r = mysqli_fetch_assoc($q)) {
         rowMultiCell($pdf, [
             $no++,
@@ -134,11 +146,10 @@ if ($jenis === 'retensi') {
         FROM arsip
         LEFT JOIN kategori ON arsip.id_kategori = kategori.id_kategori
         ORDER BY umur DESC
+        LIMIT $offset, $limit
     ");
 
-    $no = 1;
-    while ($r = mysqli_fetch_assoc($q)) {
-        rowMultiCell($pdf, [
+    $no = $offset + 1; while ($r = mysqli_fetch_assoc($q)) {        rowMultiCell($pdf, [
             $no++,
             $r['nomor_surat'],
             $r['nama_kategori'],
@@ -175,10 +186,10 @@ if ($jenis === 'pemusnahan') {
         JOIN arsip ON pemusnahan.id_arsip = arsip.id_arsip
         JOIN users ON pemusnahan.disetujui_oleh = users.id_user
         ORDER BY pemusnahan.tanggal_pemusnahan DESC
+        LIMIT $offset, $limit
     ");
 
-    $no = 1;
-    while ($r = mysqli_fetch_assoc($q)) {
+    $no = $offset + 1;    while ($r = mysqli_fetch_assoc($q)) {
         rowMultiCell($pdf, [
             $no++,
             $r['nomor_surat'],
@@ -214,10 +225,10 @@ if ($jenis === 'log') {
         FROM log_aktivitas
         LEFT JOIN users ON log_aktivitas.id_user = users.id_user
         ORDER BY log_aktivitas.tanggal DESC
+        LIMIT $offset, $limit
     ");
 
-    $no = 1;
-    while ($r = mysqli_fetch_assoc($q)) {
+    $no = $offset + 1;    while ($r = mysqli_fetch_assoc($q)) {
         rowMultiCell($pdf, [
             $no++,
             $r['nama_lengkap'] ?? '-',
