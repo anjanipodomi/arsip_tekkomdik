@@ -1,0 +1,20 @@
+RewriteEngine On
+
+# Nonaktifkan directory listing
+Options -Indexes
+
+# Lindungi file sensitif
+<FilesMatch "\.(env|ini|log|sql|bak|inc|config|htaccess)$">
+    Require all denied
+</FilesMatch>
+
+# Blok folder sensitif
+RewriteRule ^(config|log|library)/ - [F,L]
+
+# Blok akses langsung file upload
+RewriteRule ^assets/uploads/ - [F,L]
+
+DirectoryIndex index.php
+
+ErrorDocument 403 /arsip_tekkomdik/index.php
+ErrorDocument 404 /arsip_tekkomdik/index.php

@@ -1,0 +1,5 @@
+.table{width:100%;border-collapse:collapse;background:#fff}
+.table th,.table td{border:1px solid #ddd;padding:8px;text-align:center}
+.table th{background:#e5e7eb}
+.badge{padding:4px 10px;border-radius:4px;color:#fff}
+.inaktif{background:#2563eb}

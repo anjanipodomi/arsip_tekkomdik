@@ -1,0 +1,14 @@
+/* Sidebar Scroll */
+aside {
+    scrollbar-width: thin;
+    scrollbar-color: #4aa8d4 #64bbe6;
+}
+
+aside::-webkit-scrollbar {
+    width: 6px;
+}
+
+aside::-webkit-scrollbar-thumb {
+    background-color: #4aa8d4;
+    border-radius: 10px;
+}

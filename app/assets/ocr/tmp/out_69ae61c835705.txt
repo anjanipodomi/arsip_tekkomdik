@@ -1,0 +1,26 @@
+LAPORAN LOG
+
+Balai Teknologi Komunikasi Pendidikan (TEKKOMDIK) DIY
+
+No Nama User Aktivitas Modul Waktu
+1 finanovita Login ke sistem - 24-02-2026 08:24
+2 rudi Login ke sistem - 24-02-2026 08:23
+3 Administrator Arsip Login ke sistem - 24-02-2026 08:22
+4 Administrator Arsip Login ke sistem - 23-02-2026 12:42
+5 finanovita Login ke sistem - 23-02-2026 10:39
+6 rudi Login ke sistem - 23-02-2026 10:38
+Ti Administrator Arsip Login ke sistem - 23-02-2026 09:57
+8 Administrator Arsip Logout dari sistem - 20-02-2026 11:05
+9 Administrator Arsip Login ke sistem - 20-02-2026 10:58
+10 Administrator Arsip Logout dari sistem - 20-02-2026 10:57
+11 Administrator Arsip Login ke sistem - 20-02-2026 10:53
+12 rudi Logout dari sistem - 20-02-2026 10:51
+13 rudi Login ke sistem - 20-02-2026 10:51
+14 Administrator Arsip Logout dari sistem - 20-02-2026 10:50
+15 finanovita Login ke sistem - 20-02-2026 10:40
+16 Administrator Arsip Logout dari sistem - 20-02-2026 10:40
+17 Administrator Arsip Login ke sistem - 20-02-2026 10:28
+18 rudi Logout dari sistem - 20-02-2026 10:28
+19 Administrator Arsip Login ke sistem - 20-02-2026 10:19
+20 Administrator Arsip Logout dari sistem - 20-02-2026 00:00
+

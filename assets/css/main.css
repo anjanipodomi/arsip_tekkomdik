@@ -1,0 +1,321 @@
+/* =========================
+   GLOBAL
+========================= */
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Segoe UI', sans-serif;
+    background:#f3f6fb;
+    color:#1f2937;
+}
+
+html, body{
+    height:100%;
+    overflow-x:hidden;
+}
+
+/* =========================
+   TOPBAR
+========================= */
+.topbar{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    height:60px;
+    background:#64bbe6;
+    color:#fff;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 35px;
+    z-index:9999;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+}
+
+.topbar-right{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+/* Supaya konten turun */
+body{
+    margin:0;
+    padding-top:60px;
+}
+
+/* =========================
+   LOGO
+========================= */
+.logo{
+    display:flex;
+    gap:5px;
+    align-items:center;
+}
+
+.logo img{
+    height:60px;
+}
+
+
+/* =========================
+   CONTENT
+========================= */
+body:not(.staff):not(.pimpinan) .content{
+    margin-left:230px;
+    margin-top:60px;
+    padding:35px;
+}
+
+body.staff .content{
+    margin: 90px 20px 40px 20px;
+    max-width: 100%;
+}
+
+body.pimpinan .content{
+    margin: 100px 20px 60px 20px !important;
+    max-width: 100% !important;
+}
+
+body.pimpinan .sidebar{
+    display:none;
+}
+
+/* Dashboard tanpa sidebar */
+body.no-sidebar .content{
+    margin-left: 0 !important;
+    padding: 30px 40px;
+    width: 100%;
+}
+
+body.no-sidebar{
+    background: #eef1f5;
+}
+
+/* =========================
+   CARD / SECTION
+========================= */
+.card,
+.section,
+.chart-card,
+.kategori-card{
+    background:#ffffff;
+    border-radius:16px;
+    border:1px solid #e5e7eb;
+    box-shadow:0 6px 20px rgba(0,0,0,0.04);
+    padding:25px;
+    margin-bottom:25px;
+}
+
+/* =========================
+   DASHBOARD GRID
+========================= */
+.card-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.card-grid h3{
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:10px;
+    color:#6b7280;
+}
+
+.card-grid p{
+    font-size:28px;
+    font-weight:700;
+    margin:0;
+}
+
+/* =========================
+   CHART
+========================= */
+.chart-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+    margin-top:30px;
+}
+
+.chart-wrapper{
+    position:relative;
+    height:280px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.btn-primary{
+    background:#2563eb;
+    color:#fff;
+    padding:8px 18px;
+    border:none;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:14px;
+    display:inline-block;
+    transition:0.2s ease;
+}
+
+.btn-primary:hover{
+    background:#1e40af;
+}
+
+.btn-danger{
+    background:#dc2626;
+    color:#fff;
+    padding:8px 18px;
+    border:none;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:14px;
+    display:inline-block;
+}
+
+.btn-danger:hover{
+    background:#b91c1c;
+}
+
+.btn-green{
+    background:#16a34a;
+    color:#fff;
+    padding:8px 18px;
+    border-radius:8px;
+    text-decoration:none;
+}
+
+.btn-green:hover{
+    background:#15803d;
+}
+
+/* =========================
+   TABLE MODERN
+========================= */
+.table-modern,
+.laporan-table{
+    width:100%;
+    border-collapse:collapse;
+    background:#ffffff;
+}
+
+.table-modern th,
+.table-modern td,
+.laporan-table th,
+.laporan-table td{
+    border:1px solid #d1d5db;
+    padding:12px;
+    text-align:center;
+}
+
+.table-modern th,
+.laporan-table th{
+    background:#f3f4f6;
+    font-weight:600;
+}
+
+.table-modern tbody tr:hover,
+.laporan-table tbody tr:hover{
+    background:#f9fafb;
+    transition:0.2s;
+}
+
+/* =========================
+   BADGE
+========================= */
+.badge-blue{
+    background:#dbeafe;
+    color:#1e3a8a;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.badge-green{
+    background:#dcfce7;
+    color:#166534;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.badge-baru{
+    background:#e74c3c;
+    color:#fff;
+    padding:4px 8px;
+    border-radius:4px;
+    font-size:12px;
+}
+
+.badge-dibaca{
+    background:#2ecc71;
+    color:#fff;
+    padding:4px 8px;
+    border-radius:4px;
+    font-size:12px;
+}
+
+/* =========================
+   LAPORAN
+========================= */
+.laporan-container{
+    width:100%;
+}
+
+.laporan-actions{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.page-title{
+    margin-bottom:20px;
+    font-size:22px;
+    font-weight:600;
+}
+
+/* =========================
+   NOTIFIKASI
+========================= */
+.notif-link{
+    position:relative;
+    color:#fff;
+    text-decoration:none;
+    font-weight:500;
+}
+
+.notif-badge{
+    position:absolute;
+    top:-6px;
+    right:-12px;
+    background:#e74c3c;
+    color:#fff;
+    font-size:12px;
+    padding:3px 6px;
+    border-radius:50px;
+    font-weight:600;
+}
+
+.sidebar-badge{
+    background:#e74c3c;
+    color:#fff;
+    font-size:11px;
+    padding:2px 6px;
+    border-radius:50px;
+    margin-left:6px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+.footer{
+    text-align:center;
+    padding:25px;
+    color:#6b7280;
+    font-size:14px;
+}
