@@ -24,7 +24,10 @@ require_once __DIR__ . "/../layout/sidebar.php";
 <main class="content">
 <div class="container-fluid">
 
-    <h3 class="fw-bold mb-4">📂 Kategori Arsip</h3>
+
+    <h3 class="fw-bold mb-4">
+        <i class="bi bi-tags me-2"></i> Kategori Arsip
+    </h3>
 
     <div class="card shadow-sm border-0">
 
@@ -77,34 +80,37 @@ require_once __DIR__ . "/../layout/sidebar.php";
                             <td>
                                 <div class="d-flex justify-content-center gap-2">
 
-                                    <!-- Edit -->
-                                    <a href="<?= BASE_URL ?>views/edit_kategori.php?id=<?= $row['id_kategori'] ?>"
-                                       class="btn btn-sm btn-outline-primary"
-                                       data-bs-toggle="tooltip"
-                                       data-bs-placement="top"
-                                       title="Edit Kategori">
+                                <?php if(strtolower($row['status']) == 'nonaktif'): ?>
+
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>
                                         <i class="bi bi-pencil-square"></i>
+                                    </button>
+
+                                <?php else: ?>
+
+                                    <a href="edit_kategori.php?id=<?= $row['id_kategori'] ?>"
+                                        class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil-square"></i>
                                     </a>
 
-                                    <?php if($status == 'AKTIF'): ?>
-                                        <!-- Nonaktifkan -->
-                                        <button class="btn btn-sm btn-outline-danger"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
-                                                title="Nonaktifkan Kategori"
-                                                onclick="toggleStatus(<?= $row['id_kategori'] ?>, 'nonaktif')">
+                                <?php endif; ?>
+
+
+                                <?php if(strtolower($row['status']) == 'aktif'): ?>
+
+                                    <button class="btn btn-sm btn-outline-danger"
+                                        onclick="toggleStatus(<?= $row['id_kategori'] ?>,'nonaktif')">
                                             <i class="bi bi-x-circle"></i>
-                                        </button>
-                                    <?php else: ?>
-                                        <!-- Aktifkan -->
-                                        <button class="btn btn-sm btn-outline-success"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
-                                                title="Aktifkan Kategori"
-                                                onclick="toggleStatus(<?= $row['id_kategori'] ?>, 'aktif')">
+                                    </button>
+
+                                <?php else: ?>
+
+                                    <button class="btn btn-sm btn-outline-success"
+                                        onclick="toggleStatus(<?= $row['id_kategori'] ?>,'aktif')">
                                             <i class="bi bi-check-circle"></i>
-                                        </button>
-                                    <?php endif; ?>
+                                    </button>
+
+                                <?php endif; ?>
 
                                 </div>
                             </td>

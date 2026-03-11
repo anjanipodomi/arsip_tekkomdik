@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . "/../config/config.php";
 include __DIR__ . "/../config/database.php";
 
 if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
@@ -30,5 +31,5 @@ mysqli_query($conn, "
     VALUES ('$nama', '$username', '$password_hash', '$role')
 ");
 
-header("Location: index.php");
+header("Location: " . BASE_URL . "views/kelola_user.php");
 exit;

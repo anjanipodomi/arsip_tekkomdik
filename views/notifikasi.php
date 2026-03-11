@@ -55,7 +55,9 @@ if ($role === 'admin') {
 <main class="content">
 <div class="container-fluid">
 
-<h3 class="fw-bold mb-4">🔔 Notifikasi Sistem</h3>
+<h3 class="fw-bold mb-4">
+    <i class="bi bi-bell me-2"></i> Notifikasi Sistem
+</h3>
 
 <div class="card shadow-sm border-0 rounded-4">
 
@@ -110,7 +112,7 @@ if ($role === 'admin') {
 
                     <!-- TANGGAL -->
                     <td class="text-center">
-                        <?= date('d-m-Y H:i', strtotime($row['tanggal'])) ?>
+                        <?= date('d/m/Y H:i', strtotime($row['tanggal'])) ?>
                     </td>
                 </tr>
 

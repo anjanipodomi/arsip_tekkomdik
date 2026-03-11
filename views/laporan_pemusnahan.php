@@ -58,7 +58,9 @@ $no = $offset + 1;
 <main class="content">
 <div class="container-fluid">
 
-<h3 class="fw-bold mb-4">🔥 Laporan Pemusnahan Arsip</h3>
+<h3 class="fw-bold mb-4">
+    <i class="bi bi-fire me-2"></i> Laporan Pemusnahan Arsip
+</h3>
 
 <div class="card shadow-sm border-0 rounded-4">
 

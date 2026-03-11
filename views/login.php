@@ -7,7 +7,9 @@ if (isset($_SESSION['id_user'])) {
 }
 
 $error = $_GET['error'] ?? '';
+require_once __DIR__ . "/../layout/head.php";
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -58,7 +60,14 @@ $error = $_GET['error'] ?? '';
 
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" name="password" required>
+
+                    <div class="input-group">
+                    <input type="password" name="password" id="password" class="form-control" required>
+
+                    <button class="btn btn-light border" type="button" onclick="togglePassword()">
+                        <i class="bi bi-eye" id="eyeIcon"></i>
+                    </button>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn-login">
@@ -83,10 +92,26 @@ $error = $_GET['error'] ?? '';
 
 </div>
 
-</body>
-
 
 </body>
+
+<script>
+function togglePassword() {
+
+    const password = document.getElementById("password");
+    const icon = document.getElementById("eyeIcon");
+
+    if (password.type === "password") {
+        password.type = "text";
+        icon.classList.replace("bi-eye","bi-eye-slash");
+    } else {
+        password.type = "password";
+        icon.classList.replace("bi-eye-slash","bi-eye");
+    }
+
+}
+</script>
+
 </html>
 
 

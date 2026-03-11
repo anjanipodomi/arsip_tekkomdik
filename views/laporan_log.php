@@ -54,7 +54,9 @@ $no = $offset + 1;
 <main class="content">
 <div class="container-fluid">
 
-<h3 class="fw-bold mb-4">🧾 Laporan Log Aktivitas Sistem</h3>
+<h3 class="fw-bold mb-4">
+    <i class="bi bi-journal-text me-2"></i> Laporan Log Aktivitas Sistem
+</h3>
 
 <div class="card shadow-sm border-0 rounded-4">
 

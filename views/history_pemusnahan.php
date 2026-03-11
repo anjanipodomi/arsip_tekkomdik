@@ -47,7 +47,9 @@ $query = mysqli_query($conn, "
 <main class="content">
 <div class="container-fluid">
 
-<h3 class="fw-bold mb-4">📜 Riwayat Pemusnahan Arsip</h3>
+<h3 class="fw-bold mb-4">
+    <i class="bi bi-journal-text me-2"></i> Riwayat Pemusnahan Arsip
+</h3>
 
 <div class="card shadow-sm border-0 rounded-4">
 <div class="card-body">

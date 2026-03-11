@@ -19,7 +19,9 @@ require_once __DIR__ . "/../layout/sidebar.php";
 <main class="content">
 <div class="container-fluid">
 
-<h3 class="fw-bold mb-4">➕ Tambah User</h3>
+<h3 class="fw-bold mb-4">
+    <i class="bi bi-person-plus"></i> Tambah User
+</h3>
 
 <div class="card shadow-sm border-0">
 <div class="card-body">
@@ -43,8 +45,17 @@ class="form-control" required>
 
 <div class="col-md-6">
 <label class="form-label">Password</label>
-<input type="password" name="password"
+
+<div class="input-group">
+<input type="password" name="password" id="password"
 class="form-control" required>
+
+<button class="btn btn-light border" type="button"
+onclick="togglePassword()">
+<i class="bi bi-eye" id="eyeIcon"></i>
+</button>
+</div>
+
 </div>
 
 <div class="col-md-6">
@@ -76,5 +87,20 @@ class="form-control" required>
 
 </div>
 </main>
+
+<script>
+function togglePassword() {
+    const password = document.getElementById("password");
+    const icon = document.getElementById("eyeIcon");
+
+    if (password.type === "password") {
+        password.type = "text";
+        icon.classList.replace("bi-eye", "bi-eye-slash");
+    } else {
+        password.type = "password";
+        icon.classList.replace("bi-eye-slash", "bi-eye");
+    }
+}
+</script>
 
 <?php require_once __DIR__ . "/../layout/footer.php"; ?>

@@ -53,7 +53,9 @@ if ($role === 'admin') {
 <main class="content">
 <div class="container-fluid">
 
-<h3 class="fw-bold mb-4">📄 Detail Arsip</h3>
+<h3 class="fw-bold mb-4">
+    <i class="bi bi-file-earmark-text me-2"></i> Detail Arsip
+</h3>
 
 <div class="card shadow-sm border-0">
 <div class="card-body">

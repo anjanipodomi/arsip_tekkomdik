@@ -11,17 +11,17 @@ if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
 }
 
 $id = $_GET['id'] ?? '';
-if (!$id) { 
-    header("Location: " . BASE_URL . "views/kategori.php"); 
-    exit; 
+if (!$id) {
+    header("Location: " . BASE_URL . "views/kategori.php");
+    exit;
 }
 
 $q = mysqli_query($conn,"SELECT * FROM kategori WHERE id_kategori='$id'");
 $data = mysqli_fetch_assoc($q);
 
-if (!$data) { 
-    header("Location: " . BASE_URL . "views/kategori.php"); 
-    exit; 
+if (!$data) {
+    header("Location: " . BASE_URL . "views/kategori.php");
+    exit;
 }
 
 require_once __DIR__ . "/../layout/init.php";
@@ -33,13 +33,23 @@ require_once __DIR__ . "/../layout/sidebar.php";
 <main class="content">
 <div class="container-fluid">
 
-<h3 class="fw-bold mb-4">✏️ Edit Kategori</h3>
+<h3 class="fw-bold mb-4">
+<i class="bi bi-pencil-square me-2"></i> Edit Kategori
+</h3>
 
 <div class="card shadow-sm border-0">
 <div class="card-body">
 
+<?php if(isset($_GET['error'])): ?>
+<div class="alert alert-warning">
+<i class="bi bi-exclamation-triangle me-2"></i>
+Data tidak valid
+</div>
+<?php endif; ?>
+
 <?php if($data['status']=='nonaktif'): ?>
 <div class="alert alert-warning">
+<i class="bi bi-exclamation-triangle me-2"></i>
 Kategori NONAKTIF tidak dapat diedit.
 </div>
 <?php endif; ?>
@@ -47,6 +57,14 @@ Kategori NONAKTIF tidak dapat diedit.
 <form method="POST" action="<?= BASE_URL ?>app/kategori/simpan_kategori.php">
 
 <input type="hidden" name="id_kategori" value="<?= $data['id_kategori'] ?>">
+
+<div class="mb-3">
+<label class="form-label">Klasifikasi Kategori</label>
+<input type="text" name="klasifikasi_kategori"
+class="form-control"
+value="<?= htmlspecialchars($data['klasifikasi_kategori'] ?? '') ?>"
+<?= $data['status']=='nonaktif'?'disabled':'' ?>>
+</div>
 
 <div class="mb-3">
 <label class="form-label">Nama Kategori</label>
@@ -57,7 +75,10 @@ value="<?= htmlspecialchars($data['nama_kategori']) ?>"
 </div>
 
 <div class="d-flex gap-2">
-<a href="<?= BASE_URL ?>views/kategori.php" class="btn btn-secondary">Kembali</a>
+
+<a href="<?= BASE_URL ?>views/kategori.php" class="btn btn-secondary">
+<i class="bi bi-arrow-left"></i> Kembali
+</a>
 
 <?php if($data['status']=='aktif'): ?>
 <button type="submit" class="btn btn-primary">
@@ -71,6 +92,7 @@ value="<?= htmlspecialchars($data['nama_kategori']) ?>"
 
 </div>
 </div>
+
 </div>
 </main>
 

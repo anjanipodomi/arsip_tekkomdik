@@ -39,11 +39,12 @@ $query = mysqli_query($conn, "
 <div class="container-fluid">
 
 <h3 class="fw-bold mb-4">
-🗑️ Arsip Menunggu Persetujuan Pemusnahan
+<i class="bi bi-trash me-2"></i> Arsip Menunggu Persetujuan Pemusnahan
 </h3>
 
 <div class="alert alert-warning">
-⚠️ Arsip berikut telah melewati masa retensi dan menunggu keputusan pimpinan.
+<i class="bi bi-exclamation-triangle me-2"></i>
+ Arsip berikut telah melewati masa retensi dan menunggu keputusan pimpinan.
 </div>
 
 <div class="card shadow-sm border-0">

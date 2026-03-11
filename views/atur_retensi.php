@@ -42,7 +42,7 @@ require_once __DIR__ . "/../layout/sidebar.php";
 <div class="container-fluid">
 
 <h3 class="fw-bold mb-4">
-⏳ Atur Retensi: <?= htmlspecialchars($data['nama_kategori']) ?>
+<i class="bi bi-clock-history me-2"></i> Atur Retensi: <?= htmlspecialchars($data['nama_kategori']) ?>
 </h3>
 
 <div class="card shadow-sm border-0">

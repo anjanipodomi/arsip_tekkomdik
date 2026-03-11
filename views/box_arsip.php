@@ -21,7 +21,9 @@ require_once __DIR__ . "/../layout/sidebar.php";
 <main class="content">
 <div class="container-fluid">
 
-    <h3 class="fw-bold mb-4">📦 Data Box Arsip</h3>
+    <h3 class="fw-bold mb-4">
+        <i class="bi bi-archive me-2"></i> Data Box Arsip
+    </h3>
 
     <div class="card shadow-sm border-0">
 

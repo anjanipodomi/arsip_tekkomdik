@@ -41,7 +41,9 @@ include '../layout/sidebar.php';
 <main class="content">
 <div class="container-fluid">
 
-<h3 class="fw-bold mb-4">⏳ Dashboard Retensi Arsip</h3>
+<h3 class="fw-bold mb-4">
+    <i class="bi bi-hourglass-split me-2"></i> Dahboard Retensi Arsip
+</h3>
 
 <div class="row g-4 mb-4">
 

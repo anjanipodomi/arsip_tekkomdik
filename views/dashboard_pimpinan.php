@@ -87,7 +87,9 @@ $query = mysqli_query($conn,"
 <main class="content">
 <div class="container-fluid">
 
-<h3 class="fw-bold mb-4">📊 Dashboard Pimpinan</h3>
+<h3 class="fw-bold mb-4">
+<i class="bi bi-speedometer2 me-2"></i> Dashboard Pimpinan
+</h3>
 
 <!-- ================= STAT CARD ================= -->
 <div class="row g-4 mb-4">

@@ -59,7 +59,8 @@ echo "<script>document.body.classList.add('no-sidebar');</script>";
 <main class="content">
 <div class="container-fluid">
 
-<h3 class="fw-bold mb-4">📂 Dashboard Staff</h3>
+<h3 class="fw-bold mb-4">
+<i class="bi bi-speedometer2 me-2"></i> Dashboard Staff</h3>
 
 <div class="card shadow-sm border-0 rounded-4">
 <div class="card-body">
@@ -118,6 +119,7 @@ while($r=mysqli_fetch_assoc($query)):
 <td>
 <div class="d-flex justify-content-center gap-2">
 
+<!-- DETAIL -->
 <a href="<?= BASE_URL ?>views/detail_arsip.php?id=<?= $r['id_arsip'] ?>"
 class="btn btn-sm btn-outline-info"
 data-bs-toggle="tooltip"
@@ -125,6 +127,16 @@ title="Detail">
 <i class="bi bi-eye"></i>
 </a>
 
+<!-- VIEW FILE -->
+<a href="<?= BASE_URL ?>app/arsip/view_arsip.php?id=<?= $r['id_arsip'] ?>"
+class="btn btn-sm btn-outline-primary"
+target="_blank"
+data-bs-toggle="tooltip"
+title="View">
+<i class="bi bi-file-earmark-text"></i>
+</a>
+
+<!-- DOWNLOAD -->
 <a href="<?= BASE_URL ?>app/arsip/download_arsip.php?id=<?= $r['id_arsip'] ?>"
 class="btn btn-sm btn-outline-success"
 data-bs-toggle="tooltip"

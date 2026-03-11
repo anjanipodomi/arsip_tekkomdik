@@ -1,17 +1,17 @@
 # =========================
 # USER UPLOADS & OCR TEMP
 # =========================
-backend/assets/uploads/
-backend/assets/ocr/tmp/
-backend/assets/ocr/debug_ocr.txt
+app/assets/uploads/
+app/assets/ocr/tmp/
+app/assets/ocr/debug_ocr.txt
 
 # =========================
 # FILE BESAR
 # =========================
-*.pdf
-*.png
-*.jpg
-*.jpeg
+uploads/*.pdf
+uploads/*.jpg
+uploads/*.png
+uploads/*.jpeg
 
 # =========================
 # LOG & TEMP

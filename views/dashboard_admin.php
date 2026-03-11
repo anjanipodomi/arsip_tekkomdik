@@ -53,7 +53,9 @@ $arsip_per_kategori = mysqli_query($conn, "
 <main class="content">
 <div class="container-fluid">
 
-<h3 class="fw-bold mb-4">📊 Dashboard Admin</h3>
+<h3 class="fw-bold mb-4">
+<i class="bi bi-speedometer2 me-2"></i> Dashboard Admin
+</h3>
 
 <!-- ==========================
      STATISTIK CARD
@@ -107,7 +109,9 @@ $arsip_per_kategori = mysqli_query($conn, "
     <div class="col-md-6">
         <div class="card shadow-sm border-0">
             <div class="card-header bg-white border-0">
-                <span class="fw-semibold">📦 Arsip per Box</span>
+                <span class="fw-semibold">
+                    <i class="bi bi-box-seam me-2"></i> Arsip per Box
+                </span>
             </div>
             <div class="card-body">
                 <div style="height:300px;">
@@ -120,7 +124,9 @@ $arsip_per_kategori = mysqli_query($conn, "
     <div class="col-md-6">
         <div class="card shadow-sm border-0">
             <div class="card-header bg-white border-0">
-                <span class="fw-semibold">🏷️ Arsip per Kategori</span>
+                <span class="fw-semibold">
+                    <i class="bi bi-tags me-2"></i> Arsip per Kategori
+                </span>
             </div>
             <div class="card-body">
                 <div style="height:300px;">

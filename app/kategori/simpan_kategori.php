@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . "/../config/config.php";
 require_once __DIR__ . "/../config/database.php";
 
 if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
@@ -10,8 +11,9 @@ $id   = $_POST['id_kategori'] ?? '';
 $klasifikasi = trim($_POST['klasifikasi_kategori'] ?? '');
 $nama = trim($_POST['nama_kategori'] ?? '');
 
-if ($id==='' || $nama==='' || $klasifikasi==='') {    $_SESSION['error'] = "Data tidak valid";
-    header("Location: edit_kategori.php?id=$id");
+if ($id==='' || $nama==='' || $klasifikasi==='') {
+    $_SESSION['error'] = "Data tidak valid";
+    header("Location: " . BASE_URL . "views/edit_kategori.php?id=$id");
     exit;
 }
 
@@ -20,13 +22,13 @@ $d = mysqli_fetch_assoc($q);
 
 if (!$d) {
     $_SESSION['error'] = "Kategori tidak ditemukan";
-    header("Location: index.php");
+    header("Location: " . BASE_URL . "views/kategori.php");
     exit;
 }
 
 if ($d['status']==='nonaktif'){
     $_SESSION['error'] = "Kategori nonaktif tidak bisa diedit";
-    header("Location: index.php");
+    header("Location: " . BASE_URL . "views/kategori.php");
     exit;
 }
 
@@ -36,8 +38,9 @@ $klasifikasi_db = mysqli_real_escape_string($conn,$klasifikasi);
 /* ===============================
    CEK TIDAK ADA PERUBAHAN
 ================================ */
-if ($d['nama_kategori'] === $nama && $d['klasifikasi_kategori'] === $klasifikasi) {    $_SESSION['error'] = "Tidak ada perubahan data";
-    header("Location: edit_kategori.php?id=$id");
+if ($d['nama_kategori'] === $nama && $d['klasifikasi_kategori'] === $klasifikasi) {
+    $_SESSION['error'] = "Tidak ada perubahan data";
+    header("Location: " . BASE_URL . "views/edit_kategori.php?id=$id");
     exit;
 }
 
@@ -52,5 +55,8 @@ mysqli_query($conn,"
     WHERE id_kategori='$id'
 ");
 
-header("Location: index.php");
+/* ===============================
+   REDIRECT SETELAH UPDATE
+================================ */
+header("Location: " . BASE_URL . "views/kategori.php");
 exit;
