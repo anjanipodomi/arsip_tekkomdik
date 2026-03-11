@@ -45,6 +45,7 @@ require_once __DIR__ . "/../layout/sidebar.php";
                     <thead class="table-light">
                         <tr>
                             <th style="width:60px;">No</th>
+                            <th style="width:120px;">Klasifikasi</th>
                             <th>Nama Kategori</th>
                             <th style="width:150px;">Status</th>
                             <th style="width:160px;">Aksi</th>
@@ -58,7 +59,9 @@ require_once __DIR__ . "/../layout/sidebar.php";
                     ?>
                         <tr>
                             <td><?= $no++ ?></td>
-
+                            <td>
+                                <?= htmlspecialchars($row['klasifikasi_kategori']) ?>
+                            </td>
                             <td class="text-start">
                                 <?= htmlspecialchars($row['nama_kategori']) ?>
                             </td>
@@ -130,6 +133,10 @@ require_once __DIR__ . "/../layout/sidebar.php";
 
       <div class="modal-body">
         <div class="mb-3">
+            <label class="form-label">Kode Klasifikasi</label>
+            <input type="text" id="klasifikasiKategori" class="form-control" placeholder="Contoh: 001">
+        </div>
+        <div class="mb-3">
             <label class="form-label">Nama Kategori</label>
             <input type="text" id="namaKategori" class="form-control" placeholder="Masukkan nama kategori">
         </div>
@@ -147,17 +154,19 @@ require_once __DIR__ . "/../layout/sidebar.php";
 
 <script>
 function simpanKategori(){
+    const klasifikasi = document.getElementById('klasifikasiKategori').value.trim();
     const nama = document.getElementById('namaKategori').value.trim();
 
-    if(!nama){
-        alert("Nama kategori tidak boleh kosong");
+    if(!klasifikasi || !nama){
+        alert("Klasifikasi dan nama kategori tidak boleh kosong");
         return;
     }
 
-    fetch('<?= BASE_URL ?>app/kategori/tambah.php', {
+    fetch('<?= BASE_URL ?>app/kategori/ajax_tambah.php', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
-        body: 'nama_kategori=' + encodeURIComponent(nama)
+        body: 'klasifikasi_kategori=' + encodeURIComponent(klasifikasi)
+            + '&nama_kategori=' + encodeURIComponent(nama)
     })
     .then(() => location.reload());
 }

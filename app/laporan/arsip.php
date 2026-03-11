@@ -20,11 +20,22 @@ if ($page < 1) $page = 1;
 
 $offset = ($page - 1) * $limit;
 
+$status_filter = $_GET['status'] ?? '';
 /* =========================
    HITUNG TOTAL DATA
 ========================= */
-$total_result = mysqli_query($conn, "SELECT COUNT(*) as total FROM arsip");
-$total_row    = mysqli_fetch_assoc($total_result);
+if($status_filter != ''){
+    $total_result = mysqli_query($conn,"
+        SELECT COUNT(*) as total 
+        FROM arsip
+        WHERE status_arsip='$status_filter'
+    ");
+}else{
+    $total_result = mysqli_query($conn,"
+        SELECT COUNT(*) as total 
+        FROM arsip
+    ");
+}$total_row    = mysqli_fetch_assoc($total_result);
 $total_data   = $total_row['total'];
 
 $total_page = ceil($total_data / $limit);
@@ -32,21 +43,38 @@ $total_page = ceil($total_data / $limit);
 /* =========================
    QUERY DATA PER HALAMAN
 ========================= */
-$q = mysqli_query($conn,"
-    SELECT 
-        arsip.nomor_surat,
-        arsip.asal_surat,
-        arsip.tanggal_surat,
-        arsip.status_arsip,
-        kategori.nama_kategori,
-        box.kode_box
-    FROM arsip
-    LEFT JOIN kategori ON arsip.id_kategori = kategori.id_kategori
-    LEFT JOIN box ON arsip.id_box = box.id_box
-    ORDER BY arsip.tanggal_surat DESC
-    LIMIT $offset, $limit
-");
-
+if($status_filter != ''){
+    $q = mysqli_query($conn,"
+        SELECT 
+            arsip.nomor_surat,
+            arsip.asal_surat,
+            arsip.tanggal_surat,
+            arsip.status_arsip,
+            kategori.nama_kategori,
+            box.kode_box
+        FROM arsip
+        LEFT JOIN kategori ON arsip.id_kategori = kategori.id_kategori
+        LEFT JOIN box ON arsip.id_box = box.id_box
+        WHERE arsip.status_arsip='$status_filter'
+        ORDER BY arsip.tanggal_surat DESC
+        LIMIT $offset, $limit
+    ");
+}else{
+    $q = mysqli_query($conn,"
+        SELECT 
+            arsip.nomor_surat,
+            arsip.asal_surat,
+            arsip.tanggal_surat,
+            arsip.status_arsip,
+            kategori.nama_kategori,
+            box.kode_box
+        FROM arsip
+        LEFT JOIN kategori ON arsip.id_kategori = kategori.id_kategori
+        LEFT JOIN box ON arsip.id_box = box.id_box
+        ORDER BY arsip.tanggal_surat DESC
+        LIMIT $offset, $limit
+    ");
+}
 $no = $offset + 1;
 ?>
 
@@ -116,30 +144,41 @@ th{background:#eee}
 <h2>📂 Laporan Data Arsip</h2>
 
 <div class="actions">
-    <a href="cetak_pdf.php?jenis=arsip&page=<?= $page ?>" 
-       target="_blank" 
-       class="btn">
-        ⬇ Download PDF (Halaman <?= $page ?>)
-    </a>
-</div>
+
+<form method="GET" style="margin-bottom:10px;">
+
+<select name="status">
+<option value="">Semua Status</option>
+<option value="Inaktif" <?= ($status_filter=='Inaktif')?'selected':'' ?>>Inaktif</option>
+<option value="Permanen" <?= ($status_filter=='Permanen')?'selected':'' ?>>Permanen</option>
+<option value="Siap Musnah" <?= ($status_filter=='Siap Musnah')?'selected':'' ?>>Siap Musnah</option>
+</select>
+
+<button type="submit" class="btn">Filter</button>
+
+</form>
+
+<a href="cetak_pdf.php?jenis=arsip&page=<?= $page ?>&status=<?= urlencode($status_filter) ?>" 
+   target="_blank" 
+   class="btn">
+⬇ Download PDF (Halaman <?= $page ?>)
+</a>
 
 <!-- PAGINATION DIPINDAH KE ATAS -->
 <div class="pagination">
 
 <?php if ($page > 1): ?>
-    <a href="?page=<?= $page-1 ?>">« Prev</a>
-<?php endif; ?>
+    <a href="?page=<?= $page-1 ?>&status=<?= urlencode($status_filter) ?>">« Prev</a><?php endif; ?>
 
 <?php for ($i=1; $i <= $total_page; $i++): ?>
-    <a href="?page=<?= $i ?>" 
+    <a href="?page=<?= $i ?>&status=<?= urlencode($status_filter) ?>"> 
        class="<?= ($i==$page)?'active':'' ?>">
         <?= $i ?>
     </a>
 <?php endfor; ?>
 
 <?php if ($page < $total_page): ?>
-    <a href="?page=<?= $page+1 ?>">Next »</a>
-<?php endif; ?>
+    <a href="?page=<?= $page+1 ?>&status=<?= urlencode($status_filter) ?>">Next »</a><?php endif; ?>
 
 </div>
 

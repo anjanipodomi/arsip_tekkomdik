@@ -43,6 +43,10 @@ if ($d['status']==='nonaktif'){
 
 <form method="POST" action="simpan_kategori.php">
     <input type="hidden" name="id_kategori" value="<?= $d['id_kategori'] ?>">
+    Klasifikasi Kategori
+    <input type="text" name="klasifikasi_kategori"
+    value="<?= htmlspecialchars($d['klasifikasi_kategori']) ?>"
+    required><br><br>
 
     Nama Kategori<br>
     <input type="text" name="nama_kategori"

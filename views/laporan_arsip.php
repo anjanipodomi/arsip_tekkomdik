@@ -28,15 +28,30 @@ $offset = ($page - 1) * $limit;
 /* =========================
    HITUNG TOTAL DATA
 ========================= */
-$total_result = mysqli_query($conn, "SELECT COUNT(*) as total FROM arsip");
-$total_row    = mysqli_fetch_assoc($total_result);
-$total_data   = $total_row['total'];
+$status = $_GET['status'] ?? '';
+
+if($status != ''){
+    $total_result = mysqli_query($conn,"
+        SELECT COUNT(*) as total
+        FROM arsip
+        WHERE status_arsip='".mysqli_real_escape_string($conn,$status)."'
+    ");
+}else{
+    $total_result = mysqli_query($conn,"
+        SELECT COUNT(*) as total
+        FROM arsip
+    ");
+}
+
+$total_row  = mysqli_fetch_assoc($total_result);
+$total_data = $total_row['total'];
 
 $total_page = ceil($total_data / $limit);
 
 /* =========================
    QUERY DATA PER HALAMAN
 ========================= */
+$status = $_GET['status'] ?? '';
 $q = mysqli_query($conn,"
     SELECT 
         arsip.nomor_surat,
@@ -48,6 +63,7 @@ $q = mysqli_query($conn,"
     FROM arsip
     LEFT JOIN kategori ON arsip.id_kategori = kategori.id_kategori
     LEFT JOIN box ON arsip.id_box = box.id_box
+    ".($status ? "WHERE arsip.status_arsip='".mysqli_real_escape_string($conn,$status)."'" : "")."
     ORDER BY arsip.tanggal_surat DESC
     LIMIT $offset, $limit
 ");
@@ -65,9 +81,24 @@ $no = $offset + 1;
     <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
         <span class="fw-semibold">Data Arsip</span>
 
-        <a href="<?= BASE_URL ?>app/laporan/cetak_pdf.php?jenis=arsip&page=<?= $page ?>"
-           target="_blank"
-           class="btn btn-danger btn-sm">
+        <form method="GET" class="d-flex gap-2">
+
+    <select name="status" class="form-select form-select-sm">
+    <option value="">Semua Status</option>
+    <option value="Inaktif" <?= (($_GET['status'] ?? '')=='Inaktif')?'selected':'' ?>>Inaktif</option>
+    <option value="Permanen" <?= (($_GET['status'] ?? '')=='Permanen')?'selected':'' ?>>Permanen</option>
+    <option value="Siap Musnah" <?= (($_GET['status'] ?? '')=='Siap Musnah')?'selected':'' ?>>Siap Musnah</option>
+    </select>
+
+    <button type="submit" class="btn btn-primary btn-sm">
+    Filter
+    </button>
+
+    </form>
+
+    <a href="<?= BASE_URL ?>app/laporan/cetak_pdf.php?jenis=arsip&page=<?= $page ?>&status=<?= urlencode($_GET['status'] ?? '') ?>"
+   target="_blank"
+   class="btn btn-danger btn-sm">
            <i class="bi bi-file-earmark-pdf"></i> Download PDF (Halaman <?= $page ?>)
         </a>
     </div>
@@ -102,8 +133,7 @@ $no = $offset + 1;
                 <td><?= $no++ ?></td>
                 <td><?= htmlspecialchars($r['nomor_surat']) ?></td>
                 <td class="text-start"><?= htmlspecialchars($r['asal_surat']) ?></td>
-                <td><?= date('d-m-Y', strtotime($r['tanggal_surat'])) ?></td>
-                <td><?= htmlspecialchars($r['nama_kategori']) ?></td>
+                <td><?= date('d/m/Y', strtotime($r['tanggal_surat'])) ?></td>                <td><?= htmlspecialchars($r['nama_kategori']) ?></td>
                 <td><?= htmlspecialchars($r['kode_box']) ?></td>
                 <td>
                     <?php
@@ -141,21 +171,20 @@ $no = $offset + 1;
 
                 <?php if($page > 1): ?>
                 <li class="page-item">
-                    <a class="page-link" href="?page=<?= $page-1 ?>">Previous</a>
+                    <a class="page-link" href="?page=<?= $page-1 ?>&status=<?= urlencode($_GET['status'] ?? '') ?>">Previous</a>
                 </li>
                 <?php endif; ?>
 
                 <?php for($i=1; $i <= $total_page; $i++): ?>
                 <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
-                    <a class="page-link" href="?page=<?= $i ?>">
-                        <?= $i ?>
+                <a class="page-link" href="?page=<?= $i ?>&status=<?= urlencode($_GET['status'] ?? '') ?>">                        <?= $i ?>
                     </a>
                 </li>
                 <?php endfor; ?>
 
-                <?php if($page < $totalPages): ?>
+                <?php if($page < $total_page): ?>
                 <li class="page-item">
-                    <a class="page-link" href="?page=<?= $page+1 ?>">Next</a>
+                    <a class="page-link" href="?page=<?= $page+1 ?>&status=<?= urlencode($_GET['status'] ?? '') ?>">Next</a>
                 </li>
                 <?php endif; ?>
 

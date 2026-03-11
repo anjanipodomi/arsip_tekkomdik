@@ -8,18 +8,33 @@ if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
+$klasifikasi = trim($_POST['klasifikasi_kategori'] ?? '');
 $nama = trim($_POST['nama_kategori'] ?? '');
-if ($nama==='') {
-    echo json_encode(['status'=>'error','pesan'=>'Nama kategori wajib diisi']);
+if ($klasifikasi==='' || $nama==='') {
+    echo json_encode([
+        'status'=>'error',
+        'pesan'=>'Klasifikasi dan nama kategori wajib diisi'
+    ]);
     exit;
 }
 
+$klasifikasi_db = mysqli_real_escape_string($conn,$klasifikasi);
 $nama_db = mysqli_real_escape_string($conn,$nama);
 
-mysqli_query($conn,"
-    INSERT INTO kategori (nama_kategori,status)
-    VALUES ('$nama_db','aktif')
-");
+$sql = "
+INSERT INTO kategori 
+(klasifikasi_kategori, nama_kategori, keterangan, status)
+VALUES 
+('$klasifikasi_db','$nama_db',NULL,'aktif')
+";
+
+if(!mysqli_query($conn,$sql)){
+    echo json_encode([
+        'status'=>'error',
+        'pesan'=>mysqli_error($conn)
+    ]);
+    exit;
+}
 
 echo json_encode([
     'status'=>'ok',

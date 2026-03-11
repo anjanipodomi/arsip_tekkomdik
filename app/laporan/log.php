@@ -53,7 +53,10 @@ body{font-family:Arial;background:#f4f6f8}
 .container{width:95%;margin:30px auto}
 table{width:100%;border-collapse:collapse;background:#fff}
 th,td{border:1px solid #ccc;padding:8px;text-align:center}
-th{background:#eee}
+th{
+    background:#eee;
+    font-weight:bold;
+}
 .actions{
     margin-bottom:15px;
     text-align:left;
@@ -152,7 +155,7 @@ th{background:#eee}
         <?= htmlspecialchars($r['modul'] ?: '-') ?>
     </span>
 </td>
-<td><?= date('d-m-Y H:i', strtotime($r['tanggal'])) ?></td>
+<td><?= date('d/m/Y H:i', strtotime($r['tanggal'])) ?></td>
 </tr>
 <?php } ?>
 

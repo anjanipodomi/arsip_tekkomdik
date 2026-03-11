@@ -36,6 +36,7 @@ a { text-decoration:none; margin:0 4px; }
 <table>
 <tr>
     <th>No</th>
+    <th>Klasifikasi</th>
     <th>Nama Kategori</th>
     <th>Status</th>
     <th>Aksi</th>
@@ -44,6 +45,7 @@ a { text-decoration:none; margin:0 4px; }
 <?php $no=1; while($r=mysqli_fetch_assoc($data)){ ?>
 <tr>
     <td><?= $no++ ?></td>
+    <td><?= htmlspecialchars($r['klasifikasi_kategori']) ?></td>
     <td><?= htmlspecialchars($r['nama_kategori']) ?></td>
 
     <td>
@@ -71,10 +73,14 @@ a { text-decoration:none; margin:0 4px; }
 
 <script>
 function tambahKategori(){
+    const klasifikasi = prompt("Kode klasifikasi (contoh: 001)");
+    if(!klasifikasi) return;
+
     const nama = prompt("Nama kategori:");
     if(!nama) return;
 
     const fd = new FormData();
+    fd.append('klasifikasi_kategori', klasifikasi);
     fd.append('nama_kategori', nama);
 
     fetch('ajax_tambah.php',{ method:'POST', body:fd })

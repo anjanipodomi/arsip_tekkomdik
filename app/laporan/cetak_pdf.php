@@ -5,6 +5,12 @@ ob_start();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../../library/fpdf.php';
 
+function tglIndo($tanggal)
+{
+    if(!$tanggal) return '-';
+    return date('d/m/Y', strtotime($tanggal));
+}
+
 /* ==========================
    CEK LOGIN
 ========================== */
@@ -31,48 +37,76 @@ if (!in_array($jenis, ['arsip','retensi','pemusnahan','log'])) {
 /* ==========================
    INIT PDF
 ========================== */
-$pdf = new FPDF('L','mm','A4');
-$pdf->SetAutoPageBreak(false);
+class PDF extends FPDF
+{
+    function Header()
+    {
+        $this->Image(__DIR__.'/../../assets/kop_balai.png',10,8,277);
+        $this->Ln(75);
+    }
+}
+$pdf = new PDF('L','mm','A4');
+$pdf->AliasNbPages();
+$pdf->SetAutoPageBreak(true,20);
 $pdf->AddPage();
+
 
 /* ==========================
    JUDUL
 ========================== */
-$pdf->SetFont('Arial','B',14);
-$pdf->Cell(0,10,'LAPORAN '.strtoupper($jenis),0,1,'C');
+$status = $_GET['status'] ?? '';
 
-$pdf->SetFont('Arial','',10);
-$pdf->Cell(0,8,'Balai Teknologi Komunikasi Pendidikan (TEKKOMDIK) DIY',0,1,'C');
+$pdf->SetFont('Arial','B',14);
+$pdf->Cell(0,8,'LAPORAN '.strtoupper($jenis),0,1,'C');
+
+if(!empty($status)){
+    $pdf->SetFont('Arial','B',11);
+    $pdf->Cell(0,6,'Status Arsip : '.strtoupper($status),0,1,'C');
+}
+
 $pdf->Ln(5);
 
 /* ==========================
    FUNGSI ROW MULTILINE + PAGE BREAK
 ========================== */
-function rowMultiCell($pdf, $data, $width, $headerCallback, $lineHeight = 7)
+function rowMultiCell($pdf, $data, $width, $headerCallback, $lineHeight = 4.5)
 {
+    // hitung jumlah baris tertinggi
     $maxLines = 1;
+
     foreach ($data as $i => $text) {
-        $text = (string)$text;
-        $lines = ceil($pdf->GetStringWidth($text) / ($width[$i] - 2));
-        $maxLines = max($maxLines, $lines);
+        $nb = ceil($pdf->GetStringWidth($text) / ($width[$i] - 2));
+        $maxLines = max($maxLines, $nb);
     }
 
     $rowHeight = $maxLines * $lineHeight;
 
-    // PAGE BREAK AMAN
-    if ($pdf->GetY() + $rowHeight > 185) {
+    // cek apakah perlu halaman baru
+    if ($pdf->GetY() + $rowHeight > 190) {
         $pdf->AddPage();
-        $headerCallback(); // header ulang
+        $headerCallback();
     }
 
+    // simpan posisi awal
+    $xStart = $pdf->GetX();
+    $yStart = $pdf->GetY();
+
     foreach ($data as $i => $text) {
+
         $x = $pdf->GetX();
         $y = $pdf->GetY();
 
+        // border cell
         $pdf->Rect($x, $y, $width[$i], $rowHeight);
-        $pdf->MultiCell($width[$i], $lineHeight, (string)$text, 0);
+
+        // isi text
+        $pdf->MultiCell($width[$i]-2, $lineHeight, ' '.utf8_decode((string)$text),0);
+
+        // pindah ke kanan cell berikutnya
         $pdf->SetXY($x + $width[$i], $y);
     }
+
+    // pindah ke baris berikutnya
     $pdf->Ln($rowHeight);
 }
 
@@ -82,40 +116,68 @@ function rowMultiCell($pdf, $data, $width, $headerCallback, $lineHeight = 7)
 if ($jenis === 'arsip') {
 
     $header = ['No','Nomor Surat','Asal Surat','Tanggal','Kategori','Box','Status'];
-    $width  = [10,45,95,30,45,25,30];
+    $width  = [10,45,110,30,35,20,25];
 
     $drawHeader = function() use ($pdf, $header, $width) {
-        $pdf->SetFont('Arial','B',9);
+
+        $pdf->SetFont('Arial','B',10);
+
+        $pdf->SetFillColor(220,220,220);
+
         foreach ($header as $i => $h) {
-            $pdf->Cell($width[$i],8,$h,1,0,'C');
+            $pdf->Cell($width[$i],8,$h,1,0,'C',true);
         }
+
         $pdf->Ln();
-        $pdf->SetFont('Arial','',9);
+
+        $pdf->SetFont('Arial','',10);
     };
 
     $drawHeader();
 
+    $perPage = 20;
+    $rowCount = 0;
+
+    $status = $_GET['status'] ?? '';
+
     $q = mysqli_query($conn,"
-        SELECT arsip.nomor_surat, arsip.asal_surat, arsip.tanggal_surat,
-            arsip.status_arsip, kategori.nama_kategori, box.kode_box
-        FROM arsip
-        LEFT JOIN kategori ON arsip.id_kategori = kategori.id_kategori
-        LEFT JOIN box ON arsip.id_box = box.id_box
-        ORDER BY arsip.tanggal_surat DESC
-        LIMIT $offset, $limit
+    SELECT 
+        arsip.nomor_surat,
+        arsip.asal_surat,
+        arsip.tanggal_surat,
+        arsip.status_arsip,
+        kategori.nama_kategori,
+        box.kode_box
+    FROM arsip
+    LEFT JOIN kategori ON arsip.id_kategori = kategori.id_kategori
+    LEFT JOIN box ON arsip.id_box = box.id_box
+    ".($status ? "WHERE arsip.status_arsip='".mysqli_real_escape_string($conn,$status)."'" : "")."
+    ORDER BY arsip.tanggal_surat DESC
+    LIMIT $offset, $limit
     ");
 
     $no = $offset + 1;
+    $perPage = 20;
+    $rowCount = 0;
     while ($r = mysqli_fetch_assoc($q)) {
+
+        if($rowCount == $perPage){
+            $pdf->AddPage();
+            $drawHeader();
+            $rowCount = 0;
+        }
+
         rowMultiCell($pdf, [
             $no++,
             $r['nomor_surat'],
             $r['asal_surat'],
-            $r['tanggal_surat'],
+            tglIndo($r['tanggal_surat']),
             $r['nama_kategori'],
             $r['kode_box'],
             $r['status_arsip']
         ], $width, $drawHeader);
+
+        $rowCount++;
     }
 }
 
@@ -133,7 +195,7 @@ if ($jenis === 'retensi') {
             $pdf->Cell($width[$i],8,$h,1,0,'C');
         }
         $pdf->Ln();
-        $pdf->SetFont('Arial','',9);
+        $pdf->SetFont('Arial','',8);
     };
 
     $drawHeader();
@@ -194,7 +256,7 @@ if ($jenis === 'pemusnahan') {
             $no++,
             $r['nomor_surat'],
             $r['asal_surat'],
-            $r['tanggal_pemusnahan'],
+            tglIndo($r['tanggal_pemusnahan']),
             $r['nama_lengkap']
         ], $width, $drawHeader);
     }
@@ -209,10 +271,14 @@ if ($jenis === 'log') {
     $width  = [10,45,120,40,55];
 
     $drawHeader = function() use ($pdf, $header, $width) {
-        $pdf->SetFont('Arial','B',9);
+
+        $pdf->SetFont('Arial','B',10);
+        $pdf->SetFillColor(220,220,220);
+
         foreach ($header as $i => $h) {
-            $pdf->Cell($width[$i],8,$h,1,0,'C');
+            $pdf->Cell($width[$i],6,$h,1,0,'C',true);
         }
+
         $pdf->Ln();
         $pdf->SetFont('Arial','',9);
     };
@@ -228,17 +294,22 @@ if ($jenis === 'log') {
         LIMIT $offset, $limit
     ");
 
-    $no = $offset + 1;    while ($r = mysqli_fetch_assoc($q)) {
+    $no = $offset + 1;
+
+    while ($r = mysqli_fetch_assoc($q)) {
+
         rowMultiCell($pdf, [
             $no++,
             $r['nama_lengkap'] ?? '-',
             $r['aktivitas'],
             $r['modul'],
-            date('d-m-Y H:i', strtotime($r['tanggal']))
+            tglIndo($r['tanggal']).' '.date('H:i', strtotime($r['tanggal']))
         ], $width, $drawHeader);
+
     }
 }
 
 ob_end_clean();
+
 $pdf->Output('D', 'laporan_'.$jenis.'_'.date('Ymd_His').'.pdf');
 exit;

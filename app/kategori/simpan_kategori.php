@@ -7,10 +7,10 @@ if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
 }
 
 $id   = $_POST['id_kategori'] ?? '';
+$klasifikasi = trim($_POST['klasifikasi_kategori'] ?? '');
 $nama = trim($_POST['nama_kategori'] ?? '');
 
-if ($id==='' || $nama==='') {
-    $_SESSION['error'] = "Data tidak valid";
+if ($id==='' || $nama==='' || $klasifikasi==='') {    $_SESSION['error'] = "Data tidak valid";
     header("Location: edit_kategori.php?id=$id");
     exit;
 }
@@ -31,12 +31,12 @@ if ($d['status']==='nonaktif'){
 }
 
 $nama_db = mysqli_real_escape_string($conn,$nama);
+$klasifikasi_db = mysqli_real_escape_string($conn,$klasifikasi);
 
 /* ===============================
    CEK TIDAK ADA PERUBAHAN
 ================================ */
-if ($d['nama_kategori'] === $nama) {
-    $_SESSION['error'] = "Tidak ada perubahan data";
+if ($d['nama_kategori'] === $nama && $d['klasifikasi_kategori'] === $klasifikasi) {    $_SESSION['error'] = "Tidak ada perubahan data";
     header("Location: edit_kategori.php?id=$id");
     exit;
 }
@@ -46,7 +46,9 @@ if ($d['nama_kategori'] === $nama) {
 ================================ */
 mysqli_query($conn,"
     UPDATE kategori
-    SET nama_kategori='$nama_db'
+    SET 
+        klasifikasi_kategori='$klasifikasi_db',
+        nama_kategori='$nama_db'
     WHERE id_kategori='$id'
 ");
 

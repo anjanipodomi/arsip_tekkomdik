@@ -106,7 +106,7 @@ $no = $offset + 1;
                     <td><?= $no++ ?></td>
                     <td><?= htmlspecialchars($r['nomor_surat']) ?></td>
                     <td class="text-start"><?= htmlspecialchars($r['asal_surat']) ?></td>
-                    <td><?= date('d-m-Y', strtotime($r['tanggal_pemusnahan'])) ?></td>
+                    <td><?= date('d/m/Y', strtotime($r['tanggal_pemusnahan'])) ?></td>
                     <td><?= htmlspecialchars($r['nama_lengkap']) ?></td>
                 </tr>
 

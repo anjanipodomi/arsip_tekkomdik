@@ -109,7 +109,7 @@ $no = $offset + 1;
                             <?= htmlspecialchars($r['modul'] ?? '-') ?>
                         </td>
                         <td>
-                            <?= date('d-m-Y H:i', strtotime($r['tanggal'])) ?>
+                            <?= date('d/m/Y H:i', strtotime($r['tanggal'])) ?>
                         </td>
                     </tr>
 
