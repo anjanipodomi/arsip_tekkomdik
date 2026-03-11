@@ -8,10 +8,10 @@ app/assets/ocr/debug_ocr.txt
 # =========================
 # FILE BESAR
 # =========================
-uploads/*.pdf
-uploads/*.jpg
-uploads/*.png
-uploads/*.jpeg
+*.pdf
+*.jpg
+*.png
+*.jpeg
 
 # =========================
 # LOG & TEMP
