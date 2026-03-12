@@ -1,0 +1,203 @@
+/* ==========================
+   FORM CONTAINER (CENTER)
+========================== */
+.form-container{
+    display:flex;
+    justify-content:center;
+    margin-top:40px;
+}
+
+/* ==========================
+   FORM CARD
+========================== */
+.form-card{
+    background:#ffffff;
+    width:100%;
+    max-width:800px; /* lebih lebar dari sebelumnya */
+    padding:35px;
+    border-radius:16px;
+    border:1px solid #e5e7eb;
+    box-shadow:0 8px 25px rgba(0,0,0,0.05);
+}
+
+/* ==========================
+   PAGE TITLE
+========================== */
+.page-title{
+    text-align:center;
+    margin-bottom:30px;
+    font-size:22px;
+    font-weight:600;
+}
+
+/* ==========================
+   FORM GROUP
+========================== */
+.form-group{
+    margin-bottom:22px;
+}
+
+.form-group label{
+    display:block;
+    font-weight:600;
+    margin-bottom:8px;
+    font-size:14px;
+    color:#374151;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    font-size:14px;
+    transition:all 0.2s ease;
+}
+
+/* Fokus modern */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+    outline:none;
+    border:1px solid #2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+}
+
+/* ==========================
+   FORM ACTION
+========================== */
+.form-actions{
+    margin-top:30px;
+    display:flex;
+    justify-content:flex-end;
+    gap:15px;
+}
+
+/* ==========================
+   BUTTON GREEN (SUBMIT)
+========================== */
+.btn-green{
+    background:#16a34a;
+    color:#fff;
+    padding:10px 18px;
+    border:none;
+    border-radius:8px;
+    font-size:14px;
+    cursor:pointer;
+    transition:0.2s ease;
+}
+
+.btn-green:hover{
+    background:#15803d;
+}
+
+/* Button + */
+/* ==========================
+   INLINE SELECT + BUTTON
+========================== */
+.form-group-inline{
+    display:flex;
+    gap:10px;
+    align-items:flex-end;
+}
+
+.form-group-inline select{
+    flex:1;
+}
+
+/* Button + */
+.btn-icon{
+    background:#e5e7eb;
+    border:none;
+    padding:10px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    transition:0.2s ease;
+}
+
+.btn-icon:hover{
+    background:#d1d5db;
+}
+
+/* ==========================
+   MODAL OVERLAY
+========================== */
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.35);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+/* ==========================
+   MODAL CARD
+========================== */
+.modal-card{
+    background:#ffffff;
+    width:100%;
+    max-width:500px;
+    padding:35px;
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+.modal-title{
+    font-size:22px;
+    font-weight:600;
+    margin-bottom:25px;
+}
+
+.modal-input{
+    width:100%;
+    padding:12px;
+    border:1px solid #d1d5db;
+    border-radius:8px;
+    font-size:14px;
+}
+
+.modal-input:focus{
+    outline:none;
+    border:1px solid #2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+}
+
+.modal-actions{
+    margin-top:30px;
+    display:flex;
+    justify-content:flex-end;
+    gap:15px;
+}
+
+/* Button Abu */
+.btn-gray{
+    background:#e5e7eb;
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.btn-gray:hover{
+    background:#d1d5db;
+}
+
+.btn-primary{
+    background:#2563eb;
+    color:#fff;
+    padding:10px 18px;
+    border:none;
+    border-radius:8px;
+    font-size:14px;
+    cursor:pointer;
+}
+
+.btn-primary:hover{
+    background:#1e40af;
+}
+

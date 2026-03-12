@@ -1,0 +1,27 @@
+# =========================
+# USER UPLOADS & OCR TEMP
+# =========================
+app/assets/uploads/
+app/assets/ocr/tmp/
+app/assets/ocr/debug_ocr.txt
+
+# =========================
+# FILE BESAR
+# =========================
+*.pdf
+*.jpg
+*.png
+*.jpeg
+
+# =========================
+# LOG & TEMP
+# =========================
+*.log
+*.tmp
+
+# =========================
+# SYSTEM & IDE
+# =========================
+.vscode/
+.DS_Store
+Thumbs.db

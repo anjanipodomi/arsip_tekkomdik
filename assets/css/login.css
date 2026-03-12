@@ -1,0 +1,251 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg,#0f172a,#1e3a8a 60%, #2563eb);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+}
+
+/* ABSTRACT SHAPE */
+body::before{
+    content:"";
+    position:absolute;
+    width:500px;
+    height:500px;
+    background:rgba(255,255,255,0.05);
+    border-radius:50%;
+    top:-150px;
+    right:-150px;
+}
+
+body::after{
+    content:"";
+    position:absolute;
+    width:400px;
+    height:400px;
+    background:rgba(255,255,255,0.04);
+    border-radius:50%;
+    bottom:-150px;
+    left:-150px;
+}
+
+/* ===========================
+   MAIN CARD
+=========================== */
+.login-card{
+    width:1000px;
+    display:flex;
+    background:rgba(255,255,255,0.95);
+    backdrop-filter:blur(10px);
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,0.35);
+    border:1px solid rgba(255,255,255,0.3);
+}
+
+/* GOLD LINE ACCENT */
+.login-card::top{
+    content:"";
+}
+
+/* ===========================
+   BRAND SIDE
+=========================== */
+.brand-side{
+    flex:1;
+    background:linear-gradient(180deg,#64bbe6,#1d4ed8);
+    color:#ffffff;
+    padding:70px 60px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    position:relative;
+}
+
+/* Gold Accent Line */
+.brand-side::after{
+    content:"";
+    position:absolute;
+    top:0;
+    right:0;
+    width:6px;
+    height:100%;
+    background:linear-gradient(#facc15,#f59e0b);
+}
+
+.brand-side img{
+    width:200px;
+    height:auto;
+    display:block;
+
+    margin:0 auto 35px auto;  /* center horizontal */
+
+    filter:drop-shadow(0 10px 25px rgba(0,0,0,0.35));
+}
+
+
+.brand-side h1{
+    font-size:26px;
+    font-weight:600;
+    margin-bottom:10px;
+    letter-spacing:0.5px;
+    text-align: center; 
+}
+
+.brand-side h2{
+    font-size:17px;
+    font-weight:400;
+    margin-bottom:25px;
+    opacity:0.9;
+    text-align: center; 
+}
+
+.brand-side p{
+    font-size:14px;
+    line-height:1.7;
+    opacity:0.9;
+    max-width:420px;
+    text-align: justify; 
+}
+
+.brand-footer{
+    margin-top:50px;
+    font-size:12px;
+    opacity:0.75;
+}
+
+/* ===========================
+   FORM SIDE
+=========================== */
+.form-side{
+    flex:1;
+    padding:80px 70px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.form-side h3{
+    font-size:24px;
+    font-weight:600;
+    margin-bottom:6px;
+    color:#0f172a;
+}
+
+.subtitle{
+    font-size:13px;
+    color:#64748b;
+    margin-bottom:30px;
+}
+
+.form-group{
+    margin-bottom:20px;
+}
+
+.form-group label{
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:6px;
+    display:block;
+    color:#334155;
+}
+
+.form-group input{
+    width:100%;
+    padding:14px;
+    border-radius:10px;
+    border:1px solid #cbd5e1;
+    background:#f8fafc;
+    transition:0.25s ease;
+    font-size:14px;
+}
+
+.form-group input:focus{
+    border-color:#2563eb;
+    background:#ffffff;
+    box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+    outline:none;
+}
+
+/* BUTTON */
+.btn-login{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(90deg,#1e3a8a,#2563eb);
+    color:#fff;
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+    transition:0.3s ease;
+}
+
+.btn-login:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 20px rgba(37,99,235,0.3);
+}
+
+/* ERROR */
+.error-box{
+    background:#fee2e2;
+    color:#991b1b;
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:20px;
+    font-size:13px;
+}
+
+/* INFO */
+.login-info{
+    text-align:center;
+    margin-top:30px;
+    font-size:12px;
+    color:#64748b;
+}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+    .login-card{
+        flex-direction:column;
+        width:95%;
+    }
+
+    .brand-side{
+        text-align:center;
+        align-items:center;
+    }
+
+    .brand-side::after{
+        display:none;
+    }
+}
+
+/* ==========================
+   LOGIN CONTAINER
+========================== */
+
+.login-container{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+/* COPYRIGHT DI BAWAH CARD */
+
+.login-footer{
+    margin-top:30px;
+    font-size:13px;
+    color:rgba(255,255,255,0.8);
+    text-align:center;
+    letter-spacing:0.5px;
+}
