@@ -87,12 +87,16 @@ while ($row = mysqli_fetch_assoc($q)) {
     if (empty($row['tanggal_surat'])) {
         continue; // skip data tidak valid
     }
+<<<<<<< HEAD
     /* ==========================
        SKIP ARSIP SUDAH DIMUSNAHKAN
     ========================== */
     if ($row['status_arsip'] === 'Dimusnahkan') {
         continue;
     }
+=======
+
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
     $tgl_surat = new DateTime($row['tanggal_surat']);
     $hari_ini  = new DateTime();
     $umur      = $hari_ini->diff($tgl_surat)->y;

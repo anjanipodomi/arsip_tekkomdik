@@ -16,7 +16,11 @@ $id_arsip = $_GET['id'] ?? '';
 if ($id_arsip === '') die("ID arsip tidak valid");
 
 // ================= PATH TOOL =================
+<<<<<<< HEAD
 $tesseract = 'C:\Tesseract-OCR\tesseract.exe';
+=======
+$tesseract = 'C:\tesseract\tesseract.exe';
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 $pdftoppm  = 'C:\poppler\Library\bin\pdftoppm.exe';
 
 // ================= DATA ARSIP =================

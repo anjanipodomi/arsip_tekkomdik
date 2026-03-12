@@ -78,8 +78,14 @@ include '../layout/sidebar.php';
 
 <div class="text-start">
     <a href="<?= BASE_URL ?>views/Manajemen_retensi.php"
+<<<<<<< HEAD
     class="btn btn-primary">
     ⚙ Kelola Retensi Arsip
+=======
+       class="btn"
+       style="background:#8e44ad;color:#fff;">
+       ⚙ Kelola Retensi Arsip
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
     </a>
 </div>
 

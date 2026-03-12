@@ -1,11 +1,16 @@
 <?php
 session_start();
+<<<<<<< HEAD
 require_once __DIR__ . "/../config/database.php";
+=======
+include __DIR__ . "/../config/database.php";
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 
 if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
     die("Akses ditolak");
 }
 
+<<<<<<< HEAD
 $id = $_GET['id'] ?? '';
 
 if ($id == '') {
@@ -39,3 +44,11 @@ if(!$hapus){
 ========================== */
 header("Location: ../../views/kelola_user.php");
 exit;
+=======
+$id = $_GET['id'];
+
+mysqli_query($conn,"DELETE FROM users WHERE id_user='$id'");
+
+header("Location: index.php");
+exit;
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de

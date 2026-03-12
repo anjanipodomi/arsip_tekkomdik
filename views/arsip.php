@@ -147,7 +147,10 @@ require_once __DIR__ . "/../layout/sidebar.php";
 <option value="Inaktif" <?= ($status=='Inaktif')?'selected':'' ?>>Inaktif</option>
 <option value="Permanen" <?= ($status=='Permanen')?'selected':'' ?>>Permanen</option>
 <option value="Siap Musnah" <?= ($status=='Siap Musnah')?'selected':'' ?>>Siap Musnah</option>
+<<<<<<< HEAD
 <option value="Dimusnahkan" <?= ($status=='Dimusnahkan')?'selected':'' ?>>Dimusnahkan</option>
+=======
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 </select>
 </div>
 

@@ -17,6 +17,7 @@ input,select{width:100%;padding:8px;margin-top:6px}
 button{margin-top:10px;padding:8px;width:100%}
 </style>
 </head>
+<<<<<<< HEAD
 
 <script>
 function togglePass(id){
@@ -25,6 +26,8 @@ function togglePass(id){
 }
 </script>
 
+=======
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 <body>
 
 <div class="container">
@@ -38,10 +41,14 @@ function togglePass(id){
     <input type="text" name="username" required>
 
     <label>Password</label>
+<<<<<<< HEAD
     <div style="position:relative">
     <input type="password" name="password" id="password" required>
     <span onclick="togglePass('password')" style="position:absolute;right:10px;top:8px;cursor:pointer">👁</span>
     </div>
+=======
+    <input type="password" name="password" required>
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 
     <label>Role</label>
     <select name="role" required>
@@ -53,6 +60,11 @@ function togglePass(id){
     <button type="submit">Simpan</button>
 </form>
 </div>
+<<<<<<< HEAD
 </body>
 
+=======
+
+</body>
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 </html>

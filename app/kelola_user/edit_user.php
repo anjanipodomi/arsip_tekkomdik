@@ -23,7 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($id_user === '' || $nama_lengkap === '' || $username === '' || $role === '') {
         $_SESSION['error'] = "Data tidak lengkap";
+<<<<<<< HEAD
         header("Location: ../../views/edit_user.php?id=$id_user");        exit;
+=======
+        header("Location: edit_user.php?id=$id_user");
+        exit;
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
     }
 
     $lama = mysqli_fetch_assoc(
@@ -44,14 +49,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (mysqli_num_rows($cek) > 0) {
         $_SESSION['error'] = "Username sudah digunakan";
+<<<<<<< HEAD
         header("Location: ../../views/edit_user.php?id=$id_user");        exit;
+=======
+        header("Location: edit_user.php?id=$id_user");
+        exit;
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
     }
 
     // Jika password diisi, wajib sama
     if ($password !== '') {
         if ($password !== $password2) {
             $_SESSION['error'] = "Konfirmasi password tidak sama";
+<<<<<<< HEAD
         header("Location: ../../views/edit_user.php?id=$id_user");            exit;
+=======
+            header("Location: edit_user.php?id=$id_user");
+            exit;
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
         }
     }
 
@@ -63,7 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($tidak_berubah) {
         $_SESSION['error'] = "Tidak ada perubahan data";
+<<<<<<< HEAD
         header("Location: ../../views/edit_user.php?id=$id_user");        exit;
+=======
+        header("Location: edit_user.php?id=$id_user");
+        exit;
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
     }
 
     if ($password !== '') {
@@ -87,7 +107,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $_SESSION['success'] = "Data user berhasil diperbarui";
+<<<<<<< HEAD
     header("Location: ../../views/kelola_user.php");
+=======
+    header("Location: index.php");
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
     exit;
 }
 

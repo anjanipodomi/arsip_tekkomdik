@@ -10,6 +10,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
 $id   = $_POST['id_kategori'] ?? '';
 $klasifikasi = trim($_POST['klasifikasi_kategori'] ?? '');
 $nama = trim($_POST['nama_kategori'] ?? '');
+<<<<<<< HEAD
 /* ===============================
    VALIDASI SPASI KOSONG
 ================================ */
@@ -18,6 +19,8 @@ if ($nama === '' || $klasifikasi === '') {
     header("Location: " . BASE_URL . "views/edit_kategori.php?id=$id");
     exit;
 }
+=======
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 
 if ($id==='' || $nama==='' || $klasifikasi==='') {
     $_SESSION['error'] = "Data tidak valid";
@@ -46,7 +49,11 @@ $klasifikasi_db = mysqli_real_escape_string($conn,$klasifikasi);
 /* ===============================
    CEK TIDAK ADA PERUBAHAN
 ================================ */
+<<<<<<< HEAD
 if (trim($d['nama_kategori']) === $nama && trim($d['klasifikasi_kategori']) === $klasifikasi) {
+=======
+if ($d['nama_kategori'] === $nama && $d['klasifikasi_kategori'] === $klasifikasi) {
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
     $_SESSION['error'] = "Tidak ada perubahan data";
     header("Location: " . BASE_URL . "views/edit_kategori.php?id=$id");
     exit;

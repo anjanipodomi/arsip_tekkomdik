@@ -25,7 +25,11 @@ if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
 }
 
 // ================= PATH TOOL =================
+<<<<<<< HEAD
 $tesseractRaw = 'C:\\Tesseract-OCR\\tesseract.exe';
+=======
+$tesseractRaw = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe';
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 $pdftoppmRaw  = 'C:\\poppler\\Library\\bin\\pdftoppm.exe';
 
 $tesseract = realpath($tesseractRaw);

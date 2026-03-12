@@ -94,7 +94,11 @@ if (mysqli_num_rows($query) === 0) {
 <?php endif; ?>
 </td>
 
+<<<<<<< HEAD
 <td><?= date('d/m/Y', strtotime($r['tanggal_pemusnahan'])) ?></td>
+=======
+<td><?= date('d-m-Y', strtotime($r['tanggal_pemusnahan'])) ?></td>
+>>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 
 <td><?= htmlspecialchars($r['pimpinan']) ?></td>
 </tr>
