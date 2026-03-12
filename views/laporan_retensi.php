@@ -67,11 +67,7 @@ $no = $offset + 1;
 
         <a href="<?= BASE_URL ?>app/laporan/cetak_pdf.php?jenis=retensi&page=<?= $page ?>"
            target="_blank"
-<<<<<<< HEAD
            class="btn btn-primary btn-sm">
-=======
-           class="btn btn-danger btn-sm">
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
            <i class="bi bi-file-earmark-pdf"></i> Download PDF (Halaman <?= $page ?>)
         </a>
         </a>

@@ -48,6 +48,14 @@ require_once __DIR__ . "/../layout/sidebar.php";
 <div class="card shadow-sm border-0">
 <div class="card-body">
 
+<?php if(isset($_SESSION['error'])): ?>
+<div class="alert alert-danger">
+<i class="bi bi-exclamation-triangle me-2"></i>
+<?= htmlspecialchars($_SESSION['error']) ?>
+</div>
+<?php unset($_SESSION['error']); ?>
+<?php endif; ?>
+
 <form method="POST" action="<?= BASE_URL ?>app/retensi/simpan_retensi.php">
 
 <input type="hidden" name="id_kategori" value="<?= $id ?>">

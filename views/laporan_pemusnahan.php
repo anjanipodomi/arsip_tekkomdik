@@ -43,17 +43,11 @@ $q = mysqli_query($conn,"
     SELECT 
         arsip.nomor_surat,
         arsip.asal_surat,
-<<<<<<< HEAD
-        pemusnahan.tanggal_pemusnahan
-    FROM pemusnahan
-    JOIN arsip ON pemusnahan.id_arsip = arsip.id_arsip
-=======
         pemusnahan.tanggal_pemusnahan,
         users.nama_lengkap
     FROM pemusnahan
     JOIN arsip ON pemusnahan.id_arsip = arsip.id_arsip
     JOIN users ON pemusnahan.disetujui_oleh = users.id_user
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
     ORDER BY pemusnahan.tanggal_pemusnahan DESC
     LIMIT $offset, $limit
 ");
@@ -75,11 +69,7 @@ $no = $offset + 1;
 
         <a href="<?= BASE_URL ?>app/laporan/cetak_pdf.php?jenis=pemusnahan&page=<?= $page ?>"
            target="_blank"
-<<<<<<< HEAD
            class="btn btn-primary btn-sm"">
-=======
-           class="btn btn-danger btn-sm">
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
            <i class="bi bi-file-earmark-pdf"></i> Download PDF (Halaman <?= $page ?>)
         </a>
     </div>
@@ -119,12 +109,7 @@ $no = $offset + 1;
                     <td><?= htmlspecialchars($r['nomor_surat']) ?></td>
                     <td class="text-start"><?= htmlspecialchars($r['asal_surat']) ?></td>
                     <td><?= date('d/m/Y', strtotime($r['tanggal_pemusnahan'])) ?></td>
-<<<<<<< HEAD
                     <td>Pimpinan</td>                </tr>
-=======
-                    <td><?= htmlspecialchars($r['nama_lengkap']) ?></td>
-                </tr>
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 
                 <?php endwhile; ?>
 

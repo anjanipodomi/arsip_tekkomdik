@@ -113,11 +113,7 @@ while($r=mysqli_fetch_assoc($query)):
 <td><?= $no++ ?></td>
 <td><?= htmlspecialchars($r['asal_surat']) ?></td>
 <td><?= htmlspecialchars($r['nomor_surat']) ?></td>
-<<<<<<< HEAD
 <td><?= date('d/m/Y',strtotime($r['tanggal_surat'])) ?></td>
-=======
-<td><?= date('d-m-Y',strtotime($r['tanggal_surat'])) ?></td>
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 <td><?= htmlspecialchars($r['nama_kategori']) ?></td>
 
 <td>

@@ -83,11 +83,7 @@ if (mysqli_num_rows($query) === 0) {
 <td><?= $no++ ?></td>
 <td><?= htmlspecialchars($row['asal_surat']) ?></td>
 <td><?= htmlspecialchars($row['nomor_surat']) ?></td>
-<<<<<<< HEAD
 <td><?= date('d/m/Y', strtotime($row['tanggal_surat'])) ?></td>
-=======
-<td><?= date('d-m-Y', strtotime($row['tanggal_surat'])) ?></td>
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 <td><?= htmlspecialchars($row['nama_kategori']) ?></td>
 
 <td>

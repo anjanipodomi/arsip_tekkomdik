@@ -101,13 +101,8 @@ if ($role === 'admin') {
                     <!-- PESAN (RATA KIRI SEPERTI LOG AKTIVITAS) -->
                     <td class="text-start">
                         <?php if (!empty($row['link'])) : ?>
-<<<<<<< HEAD
-                            <a href="<?= htmlspecialchars($row['link']) ?>" 
-                                class="text-decoration-none text-dark"> 
-=======
-                            <a href="<?= BASE_URL . htmlspecialchars($row['link']) ?>" 
-                               class="text-decoration-none text-dark">
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
+                        <a href="<?= BASE_URL . $row['link'] ?>" 
+                            class="text-decoration-none text-dark">
                                 <?= htmlspecialchars($row['pesan']) ?>
                             </a>
                         <?php else : ?>

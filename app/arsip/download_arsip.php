@@ -49,12 +49,7 @@ $fileRel = str_replace(['\\', '//'], '/', $fileRel);
 $fileRel = ltrim($fileRel, '/');
 
 // Root project (naik dari app/arsip)
-<<<<<<< HEAD
 $rootPath = realpath(__DIR__ . '/../');
-=======
-$rootPath = realpath(__DIR__ . '/../../');
-
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 $filePath = $rootPath . '/' . $fileRel;
 
 if (!is_readable($filePath)) {

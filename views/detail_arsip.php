@@ -126,17 +126,11 @@ if ($role === 'admin') {
 <i class="bi bi-arrow-left"></i> Kembali
 </a>
 
-<?php if(!$arsip_dimusnahkan): ?>
-<a href="<?= BASE_URL ?>app/arsip/download_arsip.php?id=<?= $data['id_arsip'] ?>"
-class="btn btn-primary">
-<i class="bi bi-download"></i> Download
-</a>
-<?php endif; ?>
 
 <?php if($role === 'admin' && !$arsip_dimusnahkan): ?>
 <a href="<?= BASE_URL ?>views/edit_arsip.php?id=<?= $data['id_arsip'] ?>"
-class="btn btn-warning">
-<i class="bi bi-pencil"></i> Edit
+class="btn btn-primary">
+<i class="bi bi-pencil-square"></i> Edit
 </a>
 
 <a href="<?= BASE_URL ?>app/arsip/hapus_arsip.php?id=<?= $data['id_arsip'] ?>"

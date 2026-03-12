@@ -33,11 +33,13 @@ require_once __DIR__ . "/../layout/sidebar.php";
 <main class="content">
 <div class="container-fluid">
 
-<<<<<<< HEAD
-<h3 class="fw-bold mb-4"><i class="bi bi-pencil-square me-2"></i> Edit User</h3>
+<h3 class="fw-bold mb-4">
+<i class="bi bi-pencil-square me-2"></i> Edit User
+</h3>
 
 <div class="card shadow-sm border-0">
 <div class="card-body">
+
 <?php if(isset($_SESSION['error'])): ?>
 <div class="alert alert-danger d-flex align-items-center">
 <i class="bi bi-exclamation-triangle me-2"></i>
@@ -45,15 +47,8 @@ require_once __DIR__ . "/../layout/sidebar.php";
 </div>
 <?php unset($_SESSION['error']); ?>
 <?php endif; ?>
+
 <form method="POST" action="<?= BASE_URL ?>app/kelola_user/edit_user.php">
-=======
-<h3 class="fw-bold mb-4">✏️ Edit User</h3>
-
-<div class="card shadow-sm border-0">
-<div class="card-body">
-
-<form method="POST" action="<?= BASE_URL ?>app/kelola_user/update_user.php">
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 
 <input type="hidden" name="id_user" value="<?= $data['id_user'] ?>">
 
@@ -73,7 +68,6 @@ value="<?= htmlspecialchars($data['username']) ?>" required>
 
 <div class="mb-3">
 <label class="form-label">Password (Kosongkan jika tidak diganti)</label>
-<<<<<<< HEAD
 
 <div class="input-group">
 <input type="password" name="password" id="password" class="form-control">
@@ -94,9 +88,6 @@ value="<?= htmlspecialchars($data['username']) ?>" required>
 </button>
 </div>
 
-=======
-<input type="password" name="password" class="form-control">
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 </div>
 
 <div class="mb-3">
@@ -122,7 +113,6 @@ value="<?= htmlspecialchars($data['username']) ?>" required>
 </div>
 </main>
 
-<<<<<<< HEAD
 <script>
 function togglePass(id){
     const input = document.getElementById(id);
@@ -130,6 +120,4 @@ function togglePass(id){
 }
 </script>
 
-=======
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 <?php require_once __DIR__ . "/../layout/footer.php"; ?>

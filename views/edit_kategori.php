@@ -40,20 +40,12 @@ require_once __DIR__ . "/../layout/sidebar.php";
 <div class="card shadow-sm border-0">
 <div class="card-body">
 
-<<<<<<< HEAD
 <?php if(isset($_SESSION['error'])): ?>
 <div class="alert alert-danger">
 <i class="bi bi-exclamation-triangle me-2"></i>
 <?= htmlspecialchars($_SESSION['error']) ?>
 </div>
 <?php unset($_SESSION['error']); ?>
-=======
-<?php if(isset($_GET['error'])): ?>
-<div class="alert alert-warning">
-<i class="bi bi-exclamation-triangle me-2"></i>
-Data tidak valid
-</div>
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 <?php endif; ?>
 
 <?php if($data['status']=='nonaktif'): ?>

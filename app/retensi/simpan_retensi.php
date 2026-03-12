@@ -15,6 +15,15 @@ $inaktif = $_POST['masa_inaktif'];
 $cek = mysqli_query($conn,"SELECT * FROM retensi WHERE id_kategori='$id'");
 
 if(mysqli_num_rows($cek)){
+
+    $data = mysqli_fetch_assoc($cek);
+
+    if($data['masa_aktif'] == $aktif && $data['masa_inaktif'] == $inaktif){
+        $_SESSION['error'] = "Tidak ada perubahan data.";
+        header("Location: " . BASE_URL . "views/atur_retensi.php?id=".$id);
+        exit;
+    }
+
     mysqli_query($conn,"
         UPDATE retensi SET
         masa_aktif='$aktif',
@@ -22,6 +31,7 @@ if(mysqli_num_rows($cek)){
         WHERE id_kategori='$id'
     ");
 }else{
+
     mysqli_query($conn,"
         INSERT INTO retensi(id_kategori,masa_aktif,masa_inaktif)
         VALUES('$id','$aktif','$inaktif')

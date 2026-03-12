@@ -34,8 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tgl   = $_POST['tanggal_surat'];
     $isi   = trim($_POST['isi_ringkas']);
 
-<<<<<<< HEAD
-    /* ==========================
+/* ==========================
    VALIDASI EDIT ARSIP
 ========================== */
 
@@ -59,13 +58,6 @@ elseif ($tgl > date('Y-m-d')) {
     }
 
     else {
-=======
-    if ($asal=='' || $nomor=='' || $tgl=='' || $isi=='') {
-        $pesan = "Semua field wajib diisi.";
-    } elseif ($tgl > date('Y-m-d')) {
-        $pesan = "Tanggal tidak boleh melebihi hari ini.";
-    } else {
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 
         $asal_db  = mysqli_real_escape_string($conn,$asal);
         $nomor_db = mysqli_real_escape_string($conn,$nomor);
@@ -94,26 +86,18 @@ require_once __DIR__ . "/../layout/sidebar.php";
 <main class="content">
 <div class="container-fluid">
 
-<<<<<<< HEAD
 <h3 class="fw-bold mb-4">
 <i class="bi bi-pencil-square"></i> Edit Arsip
 </h3>
-=======
-<h3 class="fw-bold mb-4">✏️ Edit Arsip</h3>
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 
 <div class="card shadow-sm border-0">
 <div class="card-body">
 
 <?php if($pesan): ?>
-<<<<<<< HEAD
 <div class="alert alert-danger">
 <i class="bi bi-exclamation-triangle me-2"></i>
 <?= $pesan ?>
 </div>
-=======
-<div class="alert alert-warning"><?= $pesan ?></div>
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 <?php endif; ?>
 
 <form method="POST">

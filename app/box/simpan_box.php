@@ -1,9 +1,6 @@
 <?php
 session_start();
-<<<<<<< HEAD
 require_once __DIR__ . "/../config/config.php";
-=======
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 require_once __DIR__ . "/../config/database.php";
 require_once __DIR__ . "/../log/log_helper.php";
 
@@ -51,11 +48,7 @@ if ($id_box !== '') {
         $_SESSION['error'] = "Tidak ada perubahan data";
         $_SESSION['old'] = $_POST;
 
-<<<<<<< HEAD
         header("Location: " . BASE_URL . "views/edit_box.php?id=$id_box");
-=======
-        header("Location: edit_box.php?id=$id_box");
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
         exit;
     }
 
@@ -90,9 +83,5 @@ if ($id_box !== '') {
     simpan_log($conn,$_SESSION['id_user'],"Tambah box ID $id","Box");
 }
 
-<<<<<<< HEAD
 header("Location: " . BASE_URL . "views/box_arsip.php");
-=======
-header("Location: index.php");
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 exit;

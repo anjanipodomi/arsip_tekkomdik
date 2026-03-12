@@ -33,16 +33,11 @@ require_once __DIR__ . "/../layout/sidebar.php";
 <main class="content">
 <div class="container-fluid">
 
-<<<<<<< HEAD
 <h3 class="fw-bold mb-4"><i class="bi bi-pencil-square me-2"></i> Edit Box Arsip</h3>
-=======
-<h3 class="fw-bold mb-4">✏️ Edit Box Arsip</h3>
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 
 <div class="card shadow-sm border-0">
 <div class="card-body">
 
-<<<<<<< HEAD
 <?php if(isset($_SESSION['error'])): ?>
 <div class="alert alert-danger d-flex align-items-center">
 <i class="bi bi-exclamation-triangle me-2"></i>
@@ -52,9 +47,6 @@ require_once __DIR__ . "/../layout/sidebar.php";
 <?php endif; ?>
 
 <form action="<?= BASE_URL ?>app/box/simpan_box.php" method="POST">
-=======
-<form action="<?= BASE_URL ?>app/box/update_box.php" method="POST">
->>>>>>> 52e3a4bcc0afc093f685ce77eddfbd5cc03f96de
 
 <input type="hidden" name="id_box" value="<?= $data['id_box'] ?>">
 

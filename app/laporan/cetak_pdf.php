@@ -42,13 +42,16 @@ class PDF extends FPDF
     function Header()
     {
         $this->Image(__DIR__.'/../../assets/kop_balai.png',10,8,277);
-        $this->Ln(75);
+        $this->Ln(70);
     }
 }
 $pdf = new PDF('L','mm','A4');
 $pdf->AliasNbPages();
 $pdf->SetAutoPageBreak(true,20);
 $pdf->AddPage();
+
+$pdf->SetLeftMargin(10);
+$pdf->SetRightMargin(10);
 
 
 /* ==========================
@@ -69,25 +72,33 @@ $pdf->Ln(5);
 /* ==========================
    FUNGSI ROW MULTILINE + PAGE BREAK
 ========================== */
-function rowMultiCell($pdf, $data, $width, $headerCallback, $lineHeight = 4.5)
+function rowMultiCell($pdf, $data, $width, $headerCallback, $lineHeight = 5)
 {
-    // hitung jumlah baris tertinggi
     $maxLines = 1;
 
     foreach ($data as $i => $text) {
-        $nb = ceil($pdf->GetStringWidth($text) / ($width[$i] - 2));
-        $maxLines = max($maxLines, $nb);
+
+        $text = (string)$text;
+
+        $nb = ceil(
+            $pdf->GetStringWidth($text) / ($width[$i] - 4)
+        );
+
+        if($nb < 1) $nb = 1;
+
+        if($nb > $maxLines){
+            $maxLines = $nb;
+        }
     }
 
     $rowHeight = $maxLines * $lineHeight;
 
-    // cek apakah perlu halaman baru
-    if ($pdf->GetY() + $rowHeight > 190) {
+    /* PAGE BREAK AMAN */
+    if ($pdf->GetY() + $rowHeight > 185) {
         $pdf->AddPage();
         $headerCallback();
     }
 
-    // simpan posisi awal
     $xStart = $pdf->GetX();
     $yStart = $pdf->GetY();
 
@@ -96,17 +107,19 @@ function rowMultiCell($pdf, $data, $width, $headerCallback, $lineHeight = 4.5)
         $x = $pdf->GetX();
         $y = $pdf->GetY();
 
-        // border cell
         $pdf->Rect($x, $y, $width[$i], $rowHeight);
 
-        // isi text
-        $pdf->MultiCell($width[$i]-2, $lineHeight, ' '.utf8_decode((string)$text),0);
+        $pdf->MultiCell(
+            $width[$i]-2,
+            $lineHeight,
+            utf8_decode((string)$text),
+            0,
+            'L'
+        );
 
-        // pindah ke kanan cell berikutnya
         $pdf->SetXY($x + $width[$i], $y);
     }
 
-    // pindah ke baris berikutnya
     $pdf->Ln($rowHeight);
 }
 
@@ -116,7 +129,7 @@ function rowMultiCell($pdf, $data, $width, $headerCallback, $lineHeight = 4.5)
 if ($jenis === 'arsip') {
 
     $header = ['No','Nomor Surat','Asal Surat','Tanggal','Kategori','Box','Status'];
-    $width  = [10,45,110,30,35,20,25];
+    $width  = [15,45,105,30,35,20,27];
 
     $drawHeader = function() use ($pdf, $header, $width) {
 
@@ -187,12 +200,13 @@ if ($jenis === 'arsip') {
 if ($jenis === 'retensi') {
 
     $header = ['No','Nomor Surat','Kategori','Umur (Tahun)','Status Retensi'];
-    $width  = [10,70,80,40,60];
+    $width  = [15,78,90,35,59];
 
     $drawHeader = function() use ($pdf, $header, $width) {
         $pdf->SetFont('Arial','B',9);
+        $pdf->SetFillColor(220,220,220);
         foreach ($header as $i => $h) {
-            $pdf->Cell($width[$i],8,$h,1,0,'C');
+            $pdf->Cell($width[$i],8,$h,1,0,'C',true);
         }
         $pdf->Ln();
         $pdf->SetFont('Arial','',8);
@@ -227,12 +241,13 @@ if ($jenis === 'retensi') {
 if ($jenis === 'pemusnahan') {
 
     $header = ['No','Nomor Surat','Asal Surat','Tanggal Musnah','Disetujui Oleh'];
-    $width  = [10,50,95,40,60];
+    $width  = [15,60,105,40,57];
 
     $drawHeader = function() use ($pdf, $header, $width) {
         $pdf->SetFont('Arial','B',9);
+        $pdf->SetFillColor(220,220,220);
         foreach ($header as $i => $h) {
-            $pdf->Cell($width[$i],8,$h,1,0,'C');
+            $pdf->Cell($width[$i],8,$h,1,0,'C',true);
         }
         $pdf->Ln();
         $pdf->SetFont('Arial','',9);
@@ -268,7 +283,7 @@ if ($jenis === 'pemusnahan') {
 if ($jenis === 'log') {
 
     $header = ['No','Nama User','Aktivitas','Modul','Waktu'];
-    $width  = [10,45,120,40,55];
+    $width  = [15,45,115,40,62];
 
     $drawHeader = function() use ($pdf, $header, $width) {
 
